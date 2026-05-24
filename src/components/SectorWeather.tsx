@@ -154,7 +154,7 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'SIDU', name: '사이더스 스페이스 (Sidus Space)', weight: '소형 위성', desc: 'Space-as-a-Service 기반 초소형 인공위성 제조 및 다중 센서 지구 관측 데이터 AI 분석 서비스 전문 기업' }
   ],
   'XLK': [
-    { ticker: 'AVGO', name: '브로드컴 (Broadcom Inc.)', weight: '인프라/반도체', desc: '글로벌 통신 칩 설계 1위이자 대형 소프트웨어(VMware) 인프라 인수로 하드웨어와 소프트웨어를 융합한 엔터프라이즈 거인' },
+    { ticker: 'INTU', name: '인튜이트 (Intuit Inc.)', weight: '세무/회계 SaaS', desc: '미국 개인 세무 신고(TurboTax) 및 중소기업 회계 장부 관리(QuickBooks) 시장을 사실상 90% 이상 독점 지배하는 경제적 해자의 SaaS 제국' },
     { ticker: 'ORCL', name: '오라클 (Oracle Corp.)', weight: '클라우드/DB', desc: '전 세계 관계형 데이터베이스(RDBMS) 압도적 1위이자 저비용 고효율 AI 연산 전용 OCI 클라우드로 시장을 재지배하는 거인' },
     { ticker: 'CRM', name: '세일즈포스 (Salesforce Inc.)', weight: 'CRM/SaaS', desc: '글로벌 1위 고객관계관리(CRM) 솔루션이자 클라우드 기반 기업용 엔터프라이즈 SaaS 시장을 개척하고 리드하는 표준 플랫폼' },
     { ticker: 'NOW', name: '서비스나우 (ServiceNow)', weight: 'ITSM/SaaS', desc: '글로벌 대기업의 IT 서비스 관리(ITSM) 및 업무 프로세스 자율 자동화 워크플로우를 독점 제공하는 초고마진 SaaS 플랫폼' },
