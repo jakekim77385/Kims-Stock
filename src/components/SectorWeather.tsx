@@ -154,11 +154,12 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'SIDU', name: '사이더스 스페이스 (Sidus Space)', weight: '소형 위성', desc: 'Space-as-a-Service 기반 초소형 인공위성 제조 및 다중 센서 지구 관측 데이터 AI 분석 서비스 전문 기업' }
   ],
   'XLK': [
-    { ticker: 'MSFT', name: '마이크로소프트 (Microsoft Corp.)', weight: 'OS/클라우드', desc: '윈도우 및 오피스 소프트웨어 독점, Azure AI 클라우드 및 OpenAI AI 모델 주도' },
-    { ticker: 'AAPL', name: '애플 (Apple Inc.)', weight: '디바이스/OS', desc: '아이폰/iOS 모바일 하드웨어 독점 생태계 및 온디바이스 AI 서비스 리더' },
-    { ticker: 'NVDA', name: '엔비디아 (NVIDIA Corp.)', weight: 'AI 반도체', desc: '글로벌 초성능 AI 가속기(GPU) 하드웨어 설계 독점 및 AI 연산 인프라 지배자' },
-    { ticker: 'AVGO', name: '브로드컴 (Broadcom Inc.)', weight: '통신 반도체', desc: '하이엔드 이더넷 스위치 칩 및 맞춤형 AI ASIC 칩 설계 1위 테크 인프라 소프트웨어 강자' },
-    { ticker: 'ORCL', name: '오라클 (Oracle Corp.)', weight: '클라우드/DB', desc: '글로벌 데이터베이스(RDBMS) 압도적 1위이자 AI 학습용 초고성능 OCI 클라우드 인프라 확장으로 제2의 전성기를 누리는 거인' }
+    { ticker: 'AVGO', name: '브로드컴 (Broadcom Inc.)', weight: '인프라/반도체', desc: '글로벌 통신 칩 설계 1위이자 대형 소프트웨어(VMware) 인프라 인수로 하드웨어와 소프트웨어를 융합한 엔터프라이즈 거인' },
+    { ticker: 'ORCL', name: '오라클 (Oracle Corp.)', weight: '클라우드/DB', desc: '전 세계 관계형 데이터베이스(RDBMS) 압도적 1위이자 저비용 고효율 AI 연산 전용 OCI 클라우드로 시장을 재지배하는 거인' },
+    { ticker: 'CRM', name: '세일즈포스 (Salesforce Inc.)', weight: 'CRM/SaaS', desc: '글로벌 1위 고객관계관리(CRM) 솔루션이자 클라우드 기반 기업용 엔터프라이즈 SaaS 시장을 개척하고 리드하는 표준 플랫폼' },
+    { ticker: 'NOW', name: '서비스나우 (ServiceNow)', weight: 'ITSM/SaaS', desc: '글로벌 대기업의 IT 서비스 관리(ITSM) 및 업무 프로세스 자율 자동화 워크플로우를 독점 제공하는 초고마진 SaaS 플랫폼' },
+    { ticker: 'ADBE', name: '어도비 (Adobe Inc.)', weight: '창작/콘텐츠 AI', desc: '포토샵, 일러스트레이터 등 전 세계 디지털 창작 콘텐츠 독점적 리더이자 생성형 AI 파이어플라이(Firefly) 탑재로 성장하는 기업' },
+    { ticker: 'PANW', name: '팔로알토 네트웍스 (Palo Alto Networks)', weight: '사이버 보안', desc: '클라우드 및 네트워크 보안 업계 1위로, AI 기반 차세대 통합 사이버 보안 인프라 플랫폼 표준을 수립해 가는 사이버 방패 대장주' }
   ],
   'IBB': [
     { ticker: 'REGN', name: 'Regeneron Pharma', weight: '8.2%', desc: '황반변성 치료제 아일리아 개발 및 안과/면역계 바이오텍' },
