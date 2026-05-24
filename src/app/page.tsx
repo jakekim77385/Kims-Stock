@@ -398,7 +398,7 @@ export default function DashboardPage() {
                   />
                   <YAxis dataKey="close" domain={['auto','auto']} tickFormatter={(v) => v.toFixed(0)} width={48} />
                   <Tooltip content={<ChartTooltip />} />
-                  <Area type="monotone" dataKey="close" stroke="#4d7ef7" strokeWidth={1.5} fill="url(#spxGrad)" dot={false} />
+                  <Area type="monotone" dataKey="close" stroke="#4d7ef7" strokeWidth={1.5} fill="url(#spxGrad)" dot={false} isAnimationActive={false} />
                 </AreaChart>
               </ResponsiveContainer>
             )}

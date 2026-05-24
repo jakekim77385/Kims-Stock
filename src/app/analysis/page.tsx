@@ -589,7 +589,7 @@ function AnalysisContent() {
                   />
                   <Area type="monotone" dataKey="close"
                     stroke={changePct >= 0 ? '#3dbb77' : '#e05454'} strokeWidth={1.5}
-                    fill="url(#priceGrad)" dot={false} />
+                    fill="url(#priceGrad)" dot={false} isAnimationActive={false} />
                 </AreaChart>
               </ResponsiveContainer>
             )}

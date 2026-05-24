@@ -143,8 +143,8 @@ export default function PortfolioPage() {
                 contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: 8, fontSize: 12 }}
               />
               <Legend formatter={(v) => v === 'portfolio' ? '내 포트폴리오' : 'S&P 500 기준'} />
-              <Area type="monotone" dataKey="portfolio" stroke="#10b981" strokeWidth={2} fill="url(#portGrad)" dot={false} />
-              <Area type="monotone" dataKey="sp500" stroke="#3b82f6" strokeWidth={1.5} fill="url(#spGrad)" dot={false} strokeDasharray="4 4" />
+              <Area type="monotone" dataKey="portfolio" stroke="#10b981" strokeWidth={2} fill="url(#portGrad)" dot={false} isAnimationActive={false} />
+              <Area type="monotone" dataKey="sp500" stroke="#3b82f6" strokeWidth={1.5} fill="url(#spGrad)" dot={false} strokeDasharray="4 4" isAnimationActive={false} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
