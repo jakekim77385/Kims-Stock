@@ -9,8 +9,8 @@ import {
 const navItems = [
   { section: '대시보드' },
   { href: '/', label: '시장 현황', icon: LayoutDashboard },
+  { href: '/knowledge', label: 'DH 기초', icon: BookOpen },
   { href: '/dh-analysis', label: 'DH 분석', icon: LineChart },
-  { href: '/knowledge', label: '기초 지식', icon: BookOpen },
   { section: '분석' },
   { href: '/screener', label: '종목 스크리너', icon: Search },
   { href: '/analysis', label: '종목 분석', icon: BarChart3 },

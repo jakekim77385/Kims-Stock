@@ -5,10 +5,10 @@ import { LayoutDashboard, Search, Briefcase, LineChart, BookOpen } from 'lucide-
 
 const mobileNavItems = [
   { href: '/', label: '시장현황', icon: LayoutDashboard },
+  { href: '/knowledge', label: 'DH 기초', icon: BookOpen },
   { href: '/dh-analysis', label: 'DH분석', icon: LineChart },
   { href: '/screener', label: '스크리너', icon: Search },
   { href: '/portfolio', label: '포트폴리오', icon: Briefcase },
-  { href: '/knowledge', label: '기초지식', icon: BookOpen },
 ];
 
 export default function MobileNav() {

@@ -226,7 +226,7 @@ export default function BasicKnowledge() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <BookOpen size={16} color="#1d4ed8" />
           <div>
-            <span style={{ fontSize: 13, fontWeight: 700, color: '#1d4ed8' }}>기초 지식</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: '#1d4ed8' }}>DH 기초</span>
             <span style={{ fontSize: 11, color: '#6b7280', marginLeft: 8 }}>
               이 대시보드의 지표와 개념 해설 — 클릭하면 {expanded ? '접힘' : '펼쳐짐'}
             </span>

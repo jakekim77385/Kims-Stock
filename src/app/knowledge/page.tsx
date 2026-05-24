@@ -697,7 +697,7 @@ export default function KnowledgePage() {
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
           <BookOpen size={20} color="#1d4ed8" />
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: '#111' }}>기초 지식</h1>
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: '#111' }}>DH 기초</h1>
         </div>
         <p style={{ fontSize: 12, color: '#6b7280', lineHeight: 1.6 }}>
           이 대시보드에서 사용하는 시장 지표와 투자 개념을 챕터별로 정리했습니다.
