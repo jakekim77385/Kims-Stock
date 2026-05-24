@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Sidebar from '@/components/layout/Sidebar';
 import Header from '@/components/layout/Header';
+import MobileNav from '@/components/layout/MobileNav';
 
 export const metadata: Metadata = {
   title: 'DH Stock — 미국 주식 투자 플랫폼',
@@ -21,8 +22,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {children}
             </main>
           </div>
+          <MobileNav />
         </div>
       </body>
     </html>
   );
 }
+
