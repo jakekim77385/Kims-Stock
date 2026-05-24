@@ -137,10 +137,9 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'ANSS', name: 'Ansys Inc.', weight: '시뮬레이션', desc: '자율주행 및 물리 로봇 설계 가상 테스트를 위한 공학 시뮬레이션 소프트웨어 대장' }
   ],
   'ARKX': [
-    { ticker: 'LMT', name: 'Lockheed Martin', weight: '8.2%', desc: 'F-35 전투기 제조 및 차세대 우주 발사체, 위성 탑재체 선두' },
-    { ticker: 'LHX', name: 'L3Harris Technologies', weight: '6.8%', desc: '우주 항공 전술 통신 및 기밀 위성 탑재 하드웨어 전문 방산사' },
-    { ticker: 'TDY', name: 'Teledyne Technologies', weight: '5.5%', desc: '심해 및 심우주 관측용 정밀 광학 센서 및 특수 소재 제조업체' },
-    { ticker: 'KTOS', name: 'Kratos Defense', weight: '4.8%', desc: '자율 무인 드론 비행기 및 우주 지상 통신 안테나 인프라' }
+    { ticker: 'RKLB', name: '로켓 랩 (Rocket Lab USA)', weight: '발사체/위성', desc: '소형 발사체 시장 독점 및 위성/우주 서비스 사업 다각화로 스페이스X에 이은 대표적 독자 민간 우주 산업 대장주' },
+    { ticker: 'LUNR', name: '인튜이티브 머신스 (Intuitive Machines)', weight: '달 인프라', desc: 'NASA CLPS 핵심 파트너이자 최초의 민간 달 착륙선 발사 성공, 월면 데이터 및 기지 통신 인프라 독점 구축사' },
+    { ticker: 'SIDU', name: '사이더스 스페이스 (Sidus Space)', weight: '소형 위성', desc: 'Space-as-a-Service 기반 초소형 인공위성 제조 및 다중 센서 지구 관측 데이터 AI 분석 서비스 전문 기업' }
   ],
   'XLK': [
     { ticker: 'MSFT', name: 'Microsoft Corp.', weight: '22.4%', desc: '소프트웨어 및 클라우드 AI 서비스 주도' },
