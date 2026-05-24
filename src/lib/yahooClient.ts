@@ -37,6 +37,83 @@ export const INDEX_SYMBOLS: Record<string, string> = {
   '10Y Treasury': '^TNX',
 };
 
+// ─── 한국어 종목명 ➡️ 영어 티커 매핑 ──────────────────────────────────────────
+export const KOREAN_STOCK_MAP: Record<string, string> = {
+  '애플': 'AAPL',
+  '마소': 'MSFT',
+  '마이크로소프트': 'MSFT',
+  '구글': 'GOOGL',
+  '알파벳': 'GOOGL',
+  '엔비디아': 'NVDA',
+  '테슬라': 'TSLA',
+  '아마존': 'AMZN',
+  '메타': 'META',
+  '페이스북': 'META',
+  '넷플릭스': 'NFLX',
+  '코카콜라': 'KO',
+  '스타벅스': 'SBUX',
+  '스벅': 'SBUX',
+  '맥도날드': 'MCD',
+  '맥도': 'MCD',
+  '코스트코': 'COST',
+  '유나이티드헬스': 'UNH',
+  '유나이티드 헬스': 'UNH',
+  '애브비': 'ABBV',
+  '존슨앤존슨': 'JNJ',
+  '존슨앤드존슨': 'JNJ',
+  '비자': 'V',
+  '마스터카드': 'MA',
+  '제이피모건': 'JPM',
+  'jp모건': 'JPM',
+  '일라이릴리': 'LLY',
+  '일라이 릴리': 'LLY',
+  '브로드컴': 'AVGO',
+  '어도비': 'ADBE',
+  '인텔': 'INTC',
+  '퀄컴': 'QCOM',
+  '암': 'ARM',
+  '팔란티어': 'PLTR',
+  '아이온큐': 'IONQ',
+  '소파이': 'SOFI',
+  '슈퍼마이크로': 'SMCI',
+  '마이크론': 'MU',
+  '코인베이스': 'COIN',
+  '디즈니': 'DIS',
+  '나이키': 'NKE',
+  '홈디포': 'HD',
+  '펩시': 'PEP',
+  '엑슨모빌': 'XOM',
+  '셰브론': 'CVX',
+  '쉐브론': 'CVX',
+  '버라이즌': 'VZ',
+  '캐터필러': 'CAT',
+  '포드': 'F',
+  '지엠': 'GM',
+  '보잉': 'BA',
+  '넷플': 'NFLX',
+  '쿠팡': 'CPNG',
+  '에이엠디': 'AMD',
+  '아이에스엠엘': 'ASML',
+  '티에스엠씨': 'TSM',
+  'tsmc': 'TSM',
+  '노보노디스크': 'NVO',
+  '릴리': 'LLY',
+};
+
+// ─── 한국어 종목명을 영어 티커로 변환하는 헬퍼 ─────────────────────────────────────
+export function resolveTicker(ticker: string): string {
+  if (!ticker) return ticker;
+  const clean = ticker.trim().toUpperCase();
+  const lower = clean.toLowerCase();
+
+  // 한국어 매핑 탐색 (완전 일치 또는 포함 관계)
+  const matchKey = Object.keys(KOREAN_STOCK_MAP).find(
+    (k) => k === lower || k.includes(lower) || lower.includes(k)
+  );
+
+  return matchKey ? KOREAN_STOCK_MAP[matchKey] : clean;
+}
+
 // ─── 단일 종목 시세 ──────────────────────────────────────────────────────────
 export interface QuoteResult {
   ticker:     string;
@@ -58,12 +135,13 @@ export interface QuoteResult {
 }
 
 export async function fetchQuote(ticker: string): Promise<QuoteResult | null> {
-  const key = `quote:${ticker.toUpperCase()}`;
+  const resolved = resolveTicker(ticker);
+  const key = `quote:${resolved.toUpperCase()}`;
   const cached = getCached<QuoteResult>(key);
   if (cached) return cached;
 
   try {
-    const q = await yahooFinance.quote(ticker.toUpperCase());
+    const q = await yahooFinance.quote(resolved.toUpperCase());
     if (!q) return null;
 
     const result: QuoteResult = {
@@ -97,7 +175,7 @@ export async function fetchQuote(ticker: string): Promise<QuoteResult | null> {
 
 // ─── 복수 종목 배치 시세 ─────────────────────────────────────────────────────
 export async function fetchQuotes(tickers: string[]): Promise<QuoteResult[]> {
-  const upper  = tickers.map((t) => t.toUpperCase());
+  const upper  = tickers.map((t) => resolveTicker(t).toUpperCase());
   const key    = `quotes:${upper.slice().sort().join(',')}`;
   const cached = getCached<QuoteResult[]>(key);
   if (cached) return cached;
@@ -180,12 +258,13 @@ export async function fetchHistory(
   ticker: string,
   period: HistoryPeriod = '6mo'
 ): Promise<HistoryBar[]> {
-  const key    = `history:${ticker.toUpperCase()}:${period}`;
+  const resolved = resolveTicker(ticker);
+  const key    = `history:${resolved.toUpperCase()}:${period}`;
   const cached = getCached<HistoryBar[]>(key);
   if (cached) return cached;
 
   try {
-    const result = await yahooFinance.chart(ticker.toUpperCase(), {
+    const result = await yahooFinance.chart(resolved.toUpperCase(), {
       period1: getPeriodStart(period),
       interval: period === '5y' ? '1wk' : '1d',
     });
@@ -235,8 +314,31 @@ export async function searchTickers(query: string): Promise<SearchResult[]> {
   const cached = getCached<SearchResult[]>(key);
   if (cached) return cached;
 
+  const resolvedQuery = resolveTicker(query);
+  const lowerQuery = query.trim().toLowerCase();
+
+  // 2. 한국어 글자가 여전히 포함되어 있는지 확인 (야후 파이낸스 에러 방지)
+  const hasKorean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(resolvedQuery);
+  if (hasKorean) {
+    // 야후 파이낸스는 한국어 검색어 입력 시 BadRequestError를 던지므로,
+    // 매핑 딕셔너리에서 부분 일치하는 인기 종목들을 필터링하여 로컬에서 반환합니다.
+    const localMatches: SearchResult[] = Object.entries(KOREAN_STOCK_MAP)
+      .filter(([koKey]) => koKey.includes(lowerQuery) || lowerQuery.includes(koKey))
+      .map(([koKey, ticker]) => ({
+        ticker,
+        name: `${ticker} (${koKey})`,
+        exchange: 'US',
+        type: 'EQUITY',
+      }));
+
+    if (localMatches.length > 0) {
+      return localMatches.slice(0, 8);
+    }
+    return [];
+  }
+
   try {
-    const res = await yahooFinance.search(query, { newsCount: 0, quotesCount: 10 });
+    const res = await yahooFinance.search(resolvedQuery, { newsCount: 0, quotesCount: 10 });
     const results: SearchResult[] = (res.quotes ?? [])
       .filter((q: any) => q.isYahooFinance && q.quoteType === 'EQUITY')
       .slice(0, 8)
@@ -256,6 +358,7 @@ export async function searchTickers(query: string): Promise<SearchResult[]> {
     return [];
   }
 }
+
 
 // ─── 전체 자산 비교표 ─────────────────────────────────────────────────────────
 export interface AssetRow {

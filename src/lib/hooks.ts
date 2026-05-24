@@ -16,34 +16,52 @@ interface FetchState<T> {
 
 function usePoll<T>(
   fetcher: () => Promise<T>,
-  intervalMs = 60_000
+  intervalMs = 60_000,
+  key = ''
 ): FetchState<T> {
   const [data, setData]     = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]   = useState<string | null>(null);
   const timerRef            = useRef<ReturnType<typeof setInterval> | null>(null);
+  const fetcherRef          = useRef(fetcher);
 
-  const fetch_ = useCallback(async () => {
+  // 항상 최신의 fetcher 참조 유지
+  useEffect(() => {
+    fetcherRef.current = fetcher;
+  }, [fetcher]);
+
+  const fetch_ = useCallback(async (isReset = false) => {
+    if (isReset) {
+      setLoading(true);
+      setError(null);
+    }
     try {
-      const result = await fetcher();
+      const result = await fetcherRef.current();
       setData(result);
       setError(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Unknown error');
+      setData(null); // 실패 시 이전 데이터 초기화 (stale 데이터 누수 방지)
     } finally {
       setLoading(false);
     }
-  }, [fetcher]);
+  }, []);
 
+  // 고유 key 변경 시에만 상태 초기화 및 페칭 수행 (인라인 함수 재생성으로 인한 무한 렌더링 루프 방지)
   useEffect(() => {
-    fetch_();
-    timerRef.current = setInterval(fetch_, intervalMs);
+    setData(null);
+    fetch_(true);
+  }, [key]);
+
+  // 폴링 핸들러
+  useEffect(() => {
+    timerRef.current = setInterval(() => fetch_(false), intervalMs);
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [fetch_, intervalMs]);
 
-  return { data, loading, error, refresh: fetch_ };
+  return { data, loading, error, refresh: () => fetch_(true) };
 }
 
 // ─── 지수 ─────────────────────────────────────────────────────────────────────
@@ -67,7 +85,8 @@ export function useMarket(intervalMs = 60_000) {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res.json();
     },
-    intervalMs
+    intervalMs,
+    'market'
   );
 }
 
@@ -101,7 +120,7 @@ export function useQuote(ticker: string, intervalMs = 60_000) {
     return json.quote as StockQuote;
   }, [ticker]);
 
-  return usePoll<StockQuote>(fetcher, intervalMs);
+  return usePoll<StockQuote>(fetcher, intervalMs, ticker);
 }
 
 // ─── 복수 종목 ────────────────────────────────────────────────────────────────
@@ -116,7 +135,7 @@ export function useQuotes(tickers?: string[], intervalMs = 60_000) {
     return json.quotes as StockQuote[];
   }, [tickers]);
 
-  return usePoll<StockQuote[]>(fetcher, intervalMs);
+  return usePoll<StockQuote[]>(fetcher, intervalMs, tickers?.join(',') ?? 'quotes');
 }
 
 // ─── 히스토리 ─────────────────────────────────────────────────────────────────
@@ -143,7 +162,7 @@ export function useHistory(
     return json.bars as HistoryBar[];
   }, [ticker, period]);
 
-  return usePoll<HistoryBar[]>(fetcher, intervalMs);
+  return usePoll<HistoryBar[]>(fetcher, intervalMs, `${ticker}:${period}`);
 }
 
 // ─── 검색 ─────────────────────────────────────────────────────────────────────
@@ -210,7 +229,8 @@ export function useComparison(intervalMs = 60_000) {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res.json();
     },
-    intervalMs
+    intervalMs,
+    'comparison'
   );
 }
 

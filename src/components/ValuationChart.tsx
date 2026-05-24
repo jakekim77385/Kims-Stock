@@ -82,29 +82,29 @@ function DerivedRow({ a }: { a: ValuationAsset }) {
     GOLD_SILVER: {
       min: 40, max: 120,
       zones: [
-        { from: 40,  to: 65,  color: '#15803d', label: '금 저평가 구간',  who: '금이 은 대비 상대적으로 저렴' },
-        { from: 65,  to: 80,  color: '#f59e0b', label: '역사적 중립',      who: '금·은 균형 구간' },
-        { from: 80,  to: 120, color: '#b91c1c', label: '은 저평가 구간',  who: '은이 금 대비 상대적으로 저렴' },
+        { from: 40,  to: 65,  color: '#15803d', label: '금 저평가',  who: '금이 은 대비 상대적으로 저렴' },
+        { from: 65,  to: 80,  color: '#f59e0b', label: '금·은 균형', who: '역사적 평균 수준의 밸류에이션' },
+        { from: 80,  to: 120, color: '#b91c1c', label: '은 저평가',  who: '은이 금 대비 상대적으로 저렴' },
       ],
-      unit: '', desc: '금÷은 가격비. 높으면 은이 싸고, 낮으면 금이 싸다.',
+      unit: '', desc: '금÷은 가격비. 높으면 은이 저평가, 낮으면 금이 저평가.',
     },
     COPPER_GOLD: {
       min: 0.0001, max: 0.0006,
       zones: [
-        { from: 0.0001, to: 0.00025, color: '#b91c1c', label: '경기 비관',   who: '구리 약세 → 경기침체 우려' },
-        { from: 0.00025,to: 0.0004,  color: '#f59e0b', label: '경기 중립',   who: '방향 불분명' },
-        { from: 0.0004, to: 0.0006,  color: '#15803d', label: '경기 낙관',   who: '구리 강세 → 경기 확장 신호' },
+        { from: 0.0001, to: 0.00025, color: '#b91c1c', label: '경기 침체',  who: '구리 약세 → 역사적 경기 위축 신호' },
+        { from: 0.00025,to: 0.0004,  color: '#f59e0b', label: '경기 중립',  who: '방향성 탐색 구간' },
+        { from: 0.0004, to: 0.0006,  color: '#15803d', label: '경기 확장',  who: '구리 강세 → 실물 경제 확장세' },
       ],
-      unit: '', desc: '구리÷금 비율. 높을수록 경기 확장 기대, 낮을수록 침체 우려.',
+      unit: '', desc: '구리÷금 비율. 높을수록 경기 낙관, 낮을수록 침체 우려.',
     },
     YIELD_SPREAD: {
       min: -2, max: 3,
       zones: [
-        { from: -2,  to: 0,   color: '#b91c1c', label: '장단기 역전 (경기침체 신호)', who: '10Y < 2Y — 역사적 침체 선행 지표' },
-        { from: 0,   to: 1,   color: '#f59e0b', label: '정상화 초입',  who: '침체 우려 해소 중' },
-        { from: 1,   to: 3,   color: '#15803d', label: '정상 수익률 곡선', who: '경기 확장 국면' },
+        { from: -2,  to: 0,   color: '#b91c1c', label: '장단기 역전', who: '10Y < 2Y — 역사적 경기 침체 선행 지표' },
+        { from: 0,   to: 1,   color: '#f59e0b', label: '정상화 초입', who: '역전 현상 해소 및 정상화 과정' },
+        { from: 1,   to: 3,   color: '#15803d', label: '정상 수익률', who: '전형적인 경제 성장 및 확장 국면' },
       ],
-      unit: '%', desc: '미국 10년물 - 단기금리. 음수(역전) = 역사적 경기침체 선행신호.',
+      unit: '%', desc: '미국 10년물 국채금리 - 단기금리 차이.',
     },
   };
 
@@ -133,9 +133,12 @@ function DerivedRow({ a }: { a: ValuationAsset }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
           <div style={{ width: 3, height: 14, borderRadius: 1, background: '#374151', flexShrink: 0 }} />
           <span style={{ fontSize: 11.5, fontWeight: 600, color: '#111' }}>{a.name}</span>
-          <span style={{ fontSize: 9, color: '#bbb', fontStyle: 'italic' }}>파생</span>
+          <span style={{ fontSize: 9, color: '#999', fontStyle: 'italic' }}>파생</span>
         </div>
-        <div style={{ fontSize: 9, color: '#999', paddingLeft: 8, marginTop: 1 }}>{desc}</div>
+        <div style={{ fontSize: 9, color: '#999', paddingLeft: 8, marginTop: 1, lineHeight: 1.2 }}>
+          {desc}
+          <div style={{ color: zone.color, fontWeight: 700, marginTop: 2, fontSize: 8.5 }}>{zone.who}</div>
+        </div>
       </div>
 
       {/* 커스텀 게이지 */}
@@ -178,17 +181,20 @@ function DerivedRow({ a }: { a: ValuationAsset }) {
         {zone.label}
       </div>
 
-      {/* 현재값 */}
+      {/* 52주 위치 */}
       <div style={{ textAlign: 'right' }}>
         <div style={{ fontSize: 13, fontWeight: 700, fontFamily: 'JetBrains Mono, monospace', color: zone.color }}>
+          {a.rangePos}%
+        </div>
+        <div style={{ fontSize: 8, color: '#bbb', marginTop: 1 }}>52주위치</div>
+      </div>
+
+      {/* 현재값 */}
+      <div style={{ textAlign: 'right' }}>
+        <div style={{ fontSize: 11, fontWeight: 700, fontFamily: 'JetBrains Mono, monospace', color: zone.color }}>
           {val >= 1 ? val.toFixed(2) : val.toFixed(5)}{unit}
         </div>
         <div style={{ fontSize: 8, color: '#bbb', marginTop: 1 }}>현재값</div>
-      </div>
-
-      {/* 해석 설명 */}
-      <div style={{ textAlign: 'right' }}>
-        <div style={{ fontSize: 9, color: zone.color, lineHeight: 1.4 }}>{zone.who}</div>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   Play, RefreshCw, TrendingUp, TrendingDown, 
   AlertTriangle, ShieldAlert, CheckCircle2, 
@@ -421,6 +422,7 @@ function updateCache(updates: {
 }
 
 export default function KimsRecommendation() {
+  const router = useRouter();
   const [scanStatus, setScanStatus] = useState<'idle' | 'scanning' | 'done'>(cachedScanStatus);
   const [progress, setProgress] = useState(cachedProgress);
   const [scannedCount, setScannedCount] = useState(cachedScannedCount);
@@ -1132,17 +1134,31 @@ export default function KimsRecommendation() {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   {filteredBuys.map(stock => (
-                    <div key={stock.ticker} style={{
-                      background: 'white',
-                      border: '1px solid rgba(16,185,129,0.2)',
-                      borderRadius: 10,
-                      padding: '16px 20px',
-                      boxShadow: '0 4px 12px rgba(16,185,129,0.04)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 12,
-                      transition: 'transform 0.15s, border-color 0.15s'
-                    }}>
+                    <div key={stock.ticker} 
+                      onClick={() => router.push(`/analysis?ticker=${stock.ticker}`)}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.transform = 'translateY(-3px)';
+                        e.currentTarget.style.borderColor = 'rgba(16,185,129,0.4)';
+                        e.currentTarget.style.boxShadow = '0 8px 20px rgba(16,185,129,0.08)';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.transform = 'none';
+                        e.currentTarget.style.borderColor = 'rgba(16,185,129,0.2)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(16,185,129,0.04)';
+                      }}
+                      style={{
+                        background: 'white',
+                        border: '1px solid rgba(16,185,129,0.2)',
+                        borderRadius: 10,
+                        padding: '16px 20px',
+                        boxShadow: '0 4px 12px rgba(16,185,129,0.04)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 12,
+                        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                        cursor: 'pointer'
+                      }}
+                    >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1, marginRight: 12 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
@@ -1286,17 +1302,31 @@ export default function KimsRecommendation() {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   {filteredSells.map(stock => (
-                    <div key={stock.ticker} style={{
-                      background: 'white',
-                      border: '1px solid rgba(239,68,68,0.2)',
-                      borderRadius: 10,
-                      padding: '16px 20px',
-                      boxShadow: '0 4px 12px rgba(239,68,68,0.04)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 12,
-                      transition: 'transform 0.15s, border-color 0.15s'
-                    }}>
+                    <div key={stock.ticker}
+                      onClick={() => router.push(`/analysis?ticker=${stock.ticker}`)}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.transform = 'translateY(-3px)';
+                        e.currentTarget.style.borderColor = 'rgba(239,68,68,0.4)';
+                        e.currentTarget.style.boxShadow = '0 8px 20px rgba(239,68,68,0.08)';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.transform = 'none';
+                        e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(239,68,68,0.04)';
+                      }}
+                      style={{
+                        background: 'white',
+                        border: '1px solid rgba(239,68,68,0.2)',
+                        borderRadius: 10,
+                        padding: '16px 20px',
+                        boxShadow: '0 4px 12px rgba(239,68,68,0.04)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 12,
+                        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                        cursor: 'pointer'
+                      }}
+                    >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1, marginRight: 12 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
@@ -1425,16 +1455,31 @@ export default function KimsRecommendation() {
             
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
               {filteredNeutrals.map(stock => (
-                <div key={stock.ticker} style={{
-                  background: 'white',
-                  border: '1px solid var(--border-default)',
-                  borderRadius: 8,
-                  padding: '12px 14px',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.01)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 8
-                }}>
+                <div key={stock.ticker}
+                  onClick={() => router.push(`/analysis?ticker=${stock.ticker}`)}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.borderColor = '#94a3b8';
+                    e.currentTarget.style.boxShadow = '0 6px 15px rgba(0,0,0,0.05)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = 'none';
+                    e.currentTarget.style.borderColor = 'var(--border-default)';
+                    e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.01)';
+                  }}
+                  style={{
+                    background: 'white',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: 8,
+                    padding: '12px 14px',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.01)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 8,
+                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                    cursor: 'pointer'
+                  }}
+                >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                       <span style={{ fontSize: 13, fontWeight: 800 }}>{stock.ticker}</span>
