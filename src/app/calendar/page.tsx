@@ -25,6 +25,7 @@ export default function CalendarPage() {
   const [importanceFilter, setImportanceFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedEvent, setSelectedEvent] = useState<MacroEvent | null>(null);
+  const [showModal, setShowModal] = useState(false);
   const [selectedDayEvents, setSelectedDayEvents] = useState<{ day: number; events: MacroEvent[] } | null>(null);
 
   // Filter events based on selections
@@ -387,6 +388,11 @@ export default function CalendarPage() {
                           {dayFilteredEvents.slice(0, 2).map((ev, i) => (
                             <div 
                               key={i} 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedEvent(ev);
+                                setShowModal(true);
+                              }}
                               style={{ 
                                 fontSize: 9, 
                                 fontWeight: 600,
@@ -399,8 +405,12 @@ export default function CalendarPage() {
                                 overflow: 'hidden',
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: 2
+                                gap: 2,
+                                cursor: 'pointer',
+                                transition: 'filter 0.1s',
                               }}
+                              onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(0.92)'}
+                              onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
                             >
                               {ev.importance === 'high' && <span style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--negative)' }} />}
                               {ev.ticker || ev.event.substring(0, 8)}
@@ -464,7 +474,10 @@ export default function CalendarPage() {
                   <div 
                     key={i} 
                     className="card card-hover" 
-                    onClick={() => setSelectedEvent(ev)}
+                    onClick={() => {
+                      setSelectedEvent(ev);
+                      setShowModal(true);
+                    }}
                     style={{ 
                       padding: 16, 
                       cursor: 'pointer',
@@ -581,7 +594,10 @@ export default function CalendarPage() {
                   {selectedDayEvents.events.map((ev, i) => (
                     <div 
                       key={i} 
-                      onClick={() => setSelectedEvent(ev)}
+                      onClick={() => {
+                        setSelectedEvent(ev);
+                        setShowModal(true);
+                      }}
                       style={{ 
                         padding: 10, 
                         borderRadius: 6, 
@@ -712,6 +728,25 @@ export default function CalendarPage() {
                 )}
 
                 {/* Corporate Stock Link Shortcut */}
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="btn btn-secondary"
+                  style={{
+                    width: '100%',
+                    marginTop: 10,
+                    fontSize: 12,
+                    padding: '9px 12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    borderRadius: 6
+                  }}
+                >
+                  <Info size={13} />
+                  <span>백과사전식 설명 및 상세 팝업 보기</span>
+                </button>
+
                 {selectedEvent.category === 'earnings' && selectedEvent.ticker && (
                   <Link 
                     href={`/analysis?ticker=${selectedEvent.ticker}`}
@@ -738,8 +773,8 @@ export default function CalendarPage() {
         )}
       </div>
 
-      {/* MODAL DETAILED DRAWER: Visible when in list view and an event is clicked */}
-      {viewMode === 'list' && selectedEvent && (
+      {/* MODAL DETAILED DRAWER: Visible when an event is clicked for pop-up explanation */}
+      {showModal && selectedEvent && (
         <div style={{
           position: 'fixed',
           top: 0,
@@ -790,7 +825,7 @@ export default function CalendarPage() {
                 <X 
                   size={18} 
                   color="var(--text-muted)" 
-                  onClick={() => setSelectedEvent(null)}
+                  onClick={() => setShowModal(false)}
                   style={{ cursor: 'pointer' }}
                 />
               </div>
@@ -866,7 +901,7 @@ export default function CalendarPage() {
             {/* Action buttons */}
             <div style={{ display: 'flex', gap: 10, marginTop: 22 }}>
               <button 
-                onClick={() => setSelectedEvent(null)}
+                onClick={() => setShowModal(false)}
                 className="btn btn-secondary"
                 style={{ flex: 1, fontSize: 13, height: 38 }}
               >
