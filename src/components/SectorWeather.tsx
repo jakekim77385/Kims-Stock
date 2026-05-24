@@ -92,11 +92,13 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'BAC', name: 'Bank of America', weight: '5.5%', desc: '자산 기준 미국 2대 대형 상업 은행' }
   ],
   'MGK': [
-    { ticker: 'MSFT', name: 'Microsoft Corp.', weight: '12.8%', desc: '오피스 독점, Azure 클라우드 및 OpenAI AI 엔진 선두' },
-    { ticker: 'AAPL', name: 'Apple Inc.', weight: '11.5%', desc: '아이폰 생태계 독점, 서비스 부문 고마진 성장세 지속' },
-    { ticker: 'NVDA', name: 'NVIDIA Corp.', weight: '9.8%', desc: 'AI 가속기(GPU) 시장 점유율 90% 이상의 공급 독점기업' },
-    { ticker: 'AMZN', name: 'Amazon.com Inc.', weight: '6.5%', desc: '글로벌 e커머스 1위 및 AWS 클라우드 인프라 대장' },
-    { ticker: 'META', name: 'Meta Platforms', weight: '4.8%', desc: '페이스북, 인스타그램 및 생성형 AI 거대 사용자망 구축' }
+    { ticker: 'MSFT', name: '마이크로소프트 (Microsoft Corp.)', weight: 'M7 대장', desc: '윈도우/오피스 소프트웨어 독점, Azure AI 클라우드 인프라 및 OpenAI 협력 모델 리더' },
+    { ticker: 'AAPL', name: '애플 (Apple Inc.)', weight: 'M7 대장', desc: '아이폰/iOS 모바일 하드웨어 생태계 독점, 디바이스 온디바이스 AI 탑재 및 강력한 소비자 충성도' },
+    { ticker: 'NVDA', name: '엔비디아 (NVIDIA Corp.)', weight: 'M7 대장', desc: '글로벌 AI 하드웨어 연산 인프라 독점, 대규모 언어 모델 트레이닝용 GPU 및 가속기 시장 90% 이상 장악' },
+    { ticker: 'AMZN', name: '아마존 (Amazon.com Inc.)', weight: 'M7 대장', desc: '글로벌 e커머스 압도적 1위 유통망 지배 및 세계 최대 클라우드 서비스(AWS) 핵심 인프라 거인' },
+    { ticker: 'META', name: '메타 (Meta Platforms)', weight: 'M7 대장', desc: '인스타그램/페이스북 등 SNS 사용자망 독점 및 오픈소스 거대 언어 모델 LLaMA 연합 리더' },
+    { ticker: 'GOOGL', name: '알파벳/구글 (Alphabet Inc.)', weight: 'M7 대장', desc: '글로벌 검색 광고 90% 독점 및 유튜브 동영상 생태계 지배, 자체 칩(TPU) 및 제미나이(Gemini) AI 엔진 구축사' },
+    { ticker: 'TSLA', name: '테슬라 (Tesla Inc.)', weight: 'M7 대장', desc: '글로벌 전기차 시장 리더이자 자율주행(FSD) 소프트웨어, 휴머노이드 로봇(Optimus), 메가팩 에너지 저장 혁신 기업' }
   ],
   'COIN': [
     { ticker: 'COIN', name: '코인베이스 (Coinbase Global)', weight: '거래소', desc: '미국 최대의 제도권 가상자산 거래 및 위탁 수탁(Custodian) 플랫폼' },
