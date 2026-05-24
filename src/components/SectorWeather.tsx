@@ -142,10 +142,11 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'OKLO', name: 'Oklo Inc.', weight: '대표 혁신', desc: '샘 올트먼이 이사회 의장으로 있는 소형 고속 핵분열 발전소 혁신 스타트업' }
   ],
   'BOTZ': [
-    { ticker: 'NVDA', name: 'NVIDIA Corp.', weight: '연산 두뇌', desc: 'AI 모델 트레이닝, 물리 로봇 자율주행 및 시뮬레이션의 근간인 GPU 연산 독점' },
-    { ticker: 'ISRG', name: 'Intuitive Surgical', weight: '의료 로봇', desc: '정밀 수술용 다빈치(DaVinci) 로봇 제조 및 소모품 수수료 독점 모델 구축' },
-    { ticker: 'SYM', name: 'Symbotic Inc.', weight: '물류 자동화', desc: 'AI 기반 초대형 스마트 물류창고 자율주행 로봇 시스템 공급 (월마트 파트너)' },
-    { ticker: 'ANSS', name: 'Ansys Inc.', weight: '시뮬레이션', desc: '자율주행 및 물리 로봇 설계 가상 테스트를 위한 공학 시뮬레이션 소프트웨어 대장' }
+    { ticker: 'NVDA', name: '엔비디아 (NVIDIA Corp.)', weight: '연산 두뇌', desc: 'AI 모델 트레이닝, 물리 로봇 자율주행 및 시뮬레이션의 근간인 고성능 GPU 인프라 공급 독점' },
+    { ticker: 'ISRG', name: '인튜이티브 서지컬 (Intuitive Surgical)', weight: '의료 로봇', desc: '세계 최고 정밀 수술용 다빈치(DaVinci) 로봇 제조 및 소모품 수수료 비즈니스 독점 모델' },
+    { ticker: 'SYM', name: '심보틱 (Symbotic Inc.)', weight: '물류 자동화', desc: 'AI 기반의 초대형 스마트 물류창고 자율주행(AMR) 로봇 시스템 공급 선두주자 (월마트 파트너)' },
+    { ticker: 'ANSS', name: '앤시스 (Ansys Inc.)', weight: '시뮬레이션', desc: '자율주행 및 물리 로봇 설계를 가상으로 테스트하고 검증하는 글로벌 공학 시뮬레이션 소프트웨어 대장' },
+    { ticker: 'PLTR', name: '팔란티어 (Palantir Technologies)', weight: 'AI 소프트웨어', desc: '미 국방부 및 글로벌 500대 기업의 빅데이터 인공지능 통합 분석 플랫폼(AIP) 시장을 장악한 실전용 AI 최강자' }
   ],
   'ARKX': [
     { ticker: 'RKLB', name: '로켓 랩 (Rocket Lab USA)', weight: '발사체/위성', desc: '소형 발사체 시장 독점 및 위성/우주 서비스 사업 다각화로 스페이스X에 이은 대표적 독자 민간 우주 산업 대장주' },
@@ -153,10 +154,11 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'SIDU', name: '사이더스 스페이스 (Sidus Space)', weight: '소형 위성', desc: 'Space-as-a-Service 기반 초소형 인공위성 제조 및 다중 센서 지구 관측 데이터 AI 분석 서비스 전문 기업' }
   ],
   'XLK': [
-    { ticker: 'MSFT', name: 'Microsoft Corp.', weight: '22.4%', desc: '소프트웨어 및 클라우드 AI 서비스 주도' },
-    { ticker: 'AAPL', name: 'Apple Inc.', weight: '18.8%', desc: '디바이스 생태계 및 IT 소비 하드웨어 선도' },
-    { ticker: 'NVDA', name: 'NVIDIA Corp.', weight: '15.4%', desc: 'AI 가속 하드웨어 연산 칩 표준 수립' },
-    { ticker: 'AVGO', name: 'Broadcom Inc.', weight: '5.8%', desc: '네트워크 칩 및 시스템 인프라 소프트웨어 강자' }
+    { ticker: 'MSFT', name: '마이크로소프트 (Microsoft Corp.)', weight: 'OS/클라우드', desc: '윈도우 및 오피스 소프트웨어 독점, Azure AI 클라우드 및 OpenAI AI 모델 주도' },
+    { ticker: 'AAPL', name: '애플 (Apple Inc.)', weight: '디바이스/OS', desc: '아이폰/iOS 모바일 하드웨어 독점 생태계 및 온디바이스 AI 서비스 리더' },
+    { ticker: 'NVDA', name: '엔비디아 (NVIDIA Corp.)', weight: 'AI 반도체', desc: '글로벌 초성능 AI 가속기(GPU) 하드웨어 설계 독점 및 AI 연산 인프라 지배자' },
+    { ticker: 'AVGO', name: '브로드컴 (Broadcom Inc.)', weight: '통신 반도체', desc: '하이엔드 이더넷 스위치 칩 및 맞춤형 AI ASIC 칩 설계 1위 테크 인프라 소프트웨어 강자' },
+    { ticker: 'ORCL', name: '오라클 (Oracle Corp.)', weight: '클라우드/DB', desc: '글로벌 데이터베이스(RDBMS) 압도적 1위이자 AI 학습용 초고성능 OCI 클라우드 인프라 확장으로 제2의 전성기를 누리는 거인' }
   ],
   'IBB': [
     { ticker: 'REGN', name: 'Regeneron Pharma', weight: '8.2%', desc: '황반변성 치료제 아일리아 개발 및 안과/면역계 바이오텍' },
