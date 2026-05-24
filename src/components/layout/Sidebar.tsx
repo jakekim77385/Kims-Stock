@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Search, BarChart3, Briefcase,
-  TrendingUp, ShieldCheck, Newspaper, Trophy, Zap, BookOpen, LineChart
+  TrendingUp, ShieldCheck, Newspaper, Trophy, Zap, BookOpen, LineChart, Calendar
 } from 'lucide-react';
 
 const navItems = [
@@ -20,6 +20,7 @@ const navItems = [
   { href: '/risk', label: '위험 관리', icon: ShieldCheck },
   { section: '인사이트' },
   { href: '/news', label: '뉴스 & 어닝', icon: Newspaper },
+  { href: '/calendar', label: '경제 일정', icon: Calendar },
   { href: '/legends', label: '전설 투자가', icon: Trophy },
 ];
 

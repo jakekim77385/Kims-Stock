@@ -101,6 +101,10 @@ export interface MacroEvent {
   forecast: string;
   previous: string;
   importance: 'high' | 'medium' | 'low';
+  category?: 'fed' | 'earnings' | 'indicator' | 'market';
+  ticker?: string;
+  description?: string;
+  impactCommentary?: string;
 }
 
 export interface LegendaryPortfolio {
@@ -137,15 +141,297 @@ export const sectorData: SectorData[] = [
 
 // ─── Macro Events Calendar ────────────────────────────────────────────────────
 export const macroEvents: MacroEvent[] = [
-  { date: '2026-05-27', event: 'Memorial Day (Market Closed)', actual: null, forecast: '-', previous: '-', importance: 'high' },
-  { date: '2026-05-28', event: 'Consumer Confidence', actual: null, forecast: '98.2', previous: '97.0', importance: 'medium' },
-  { date: '2026-05-29', event: 'GDP Q1 (Revised)', actual: null, forecast: '2.4%', previous: '2.4%', importance: 'high' },
-  { date: '2026-05-30', event: 'PCE Price Index YoY', actual: null, forecast: '2.7%', previous: '2.7%', importance: 'high' },
-  { date: '2026-06-04', event: 'ISM Manufacturing PMI', actual: null, forecast: '49.8', previous: '49.2', importance: 'medium' },
-  { date: '2026-06-06', event: 'Non-Farm Payrolls', actual: null, forecast: '185K', previous: '175K', importance: 'high' },
-  { date: '2026-06-11', event: 'CPI YoY', actual: null, forecast: '3.3%', previous: '3.4%', importance: 'high' },
-  { date: '2026-06-12', event: 'FOMC Meeting (Day 1)', actual: null, forecast: '-', previous: '-', importance: 'high' },
-  { date: '2026-06-13', event: 'FOMC Rate Decision', actual: null, forecast: '5.25-5.50%', previous: '5.25-5.50%', importance: 'high' },
+  {
+    date: '2026-05-20',
+    event: 'FOMC 의사록 공개 (Minutes)',
+    actual: '완화적',
+    forecast: '-',
+    previous: '-',
+    importance: 'medium',
+    category: 'fed',
+    description: '지난 연방공개시장위원회(FOMC) 회의의 상세 논의 내용이 담긴 의사록이 공개됩니다.',
+    impactCommentary: '인플레이션 둔화에 대한 연준 위원들의 확신 정도와 향후 금리 인하 경로에 대한 구체적인 힌트가 들어있어 시장 금리에 변동성을 줄 수 있습니다.'
+  },
+  {
+    date: '2026-05-22',
+    event: 'NVIDIA 1분기 실적 발표 (어닝)',
+    actual: '서프라이즈',
+    forecast: 'EPS $5.52',
+    previous: 'EPS $1.09',
+    importance: 'high',
+    category: 'earnings',
+    ticker: 'NVDA',
+    description: '글로벌 AI 반도체 대장주 엔비디아의 분기 실적 발표입니다.',
+    impactCommentary: 'AI 수요의 지속 가능성을 가늠할 수 있는 핵심 지표로, 결과에 따라 기술주 전반 및 나스닥 지수에 막대한 영향을 미칩니다.'
+  },
+  {
+    date: '2026-05-27',
+    event: '메모리얼 데이 (미국 증시 휴장)',
+    actual: null,
+    forecast: '-',
+    previous: '-',
+    importance: 'high',
+    category: 'market',
+    description: '미국 연방 공휴일인 메모리얼 데이로 주식 및 채권 시장이 휴장합니다.',
+    impactCommentary: '시장 거래량이 전후로 감소할 수 있으나, 휴장일 동안의 지정학적 이슈나 주말 뉴스가 화요일 개장 시 급격히 반영될 수 있으니 유의가 필요합니다.'
+  },
+  {
+    date: '2026-05-28',
+    event: '5월 콘퍼런스보드 소비자신뢰지수',
+    actual: null,
+    forecast: '98.2',
+    previous: '97.0',
+    importance: 'medium',
+    category: 'indicator',
+    description: '미국 소비자들이 인지하는 경기 상황과 향후 전망을 수치화한 지표입니다.',
+    impactCommentary: '예상치 상회 시 소비 활력 유지를 시사하여 경기 연착륙 가능성을 높이며, 달러화 강세 및 기술주 호재로 작용할 수 있습니다.'
+  },
+  {
+    date: '2026-05-29',
+    event: 'Costco 분기 실적 발표 (어닝)',
+    actual: null,
+    forecast: 'EPS $3.68',
+    previous: 'EPS $3.42',
+    importance: 'medium',
+    category: 'earnings',
+    ticker: 'COST',
+    description: '대형 창고형 할인매장 코스트코의 실적 발표입니다.',
+    impactCommentary: '미국 중산층 소비 심리와 실질 소비 활력의 바로미터 역할을 합니다.'
+  },
+  {
+    date: '2026-05-29',
+    event: '1분기 GDP 성장률 수정치 (Annualized)',
+    actual: null,
+    forecast: '2.4%',
+    previous: '2.4%',
+    importance: 'high',
+    category: 'indicator',
+    description: '미국 경제의 성장 속도를 나타내는 대표적인 거시지표의 분기 두 번째 집계치입니다.',
+    impactCommentary: '수정치가 속보치보다 대폭 개선될 경우 미국 경제의 강한 펀더멘털을 방증하며, 연준의 고금리 장기화 명분을 제공하여 채권 금리가 상승할 수 있습니다.'
+  },
+  {
+    date: '2026-05-30',
+    event: '4월 PCE 개인소비지출 물가지수 (YoY)',
+    actual: null,
+    forecast: '2.7%',
+    previous: '2.7%',
+    importance: 'high',
+    category: 'indicator',
+    description: '연방준비제도(Fed)가 물가 지표로 가장 선호하는 개인소비지출 기준의 물가 상승률입니다.',
+    impactCommentary: '근원 PCE 수치가 예상치를 하회할 경우 하반기 금리 인하 기대가 극대화되며 증시 전반에 강한 랠리를 유발할 가능성이 높습니다.'
+  },
+  {
+    date: '2026-06-04',
+    event: '5월 ISM 제조업 구매관리자지수 (PMI)',
+    actual: null,
+    forecast: '49.8',
+    previous: '49.2',
+    importance: 'medium',
+    category: 'indicator',
+    description: '미국 제조기업들의 구매 담당 실무자들을 대상으로 조사한 경기 동향 지표입니다.',
+    impactCommentary: '50을 기준으로 경기 확장과 위축을 나타내며, 50을 돌파하여 확장 국면에 진입할 시 견조한 성장 모멘텀으로 인식됩니다.'
+  },
+  {
+    date: '2026-06-06',
+    event: '5월 비농업 고용지수 & 실업률',
+    actual: null,
+    forecast: '185K / 3.9%',
+    previous: '175K / 3.9%',
+    importance: 'high',
+    category: 'indicator',
+    description: '농업 부문을 제외한 미국의 신규 일자리 창출 수 및 실업률 지표입니다.',
+    impactCommentary: '매달 첫째 주 금요일 발표되는 노동 시장 핵심 지표로, 고용이 예상보다 너무 강하면 인플레이션 우려로 증시에 부담이 되고, 적절히 식어가는 지표가 확인되면 호재로 인식됩니다.'
+  },
+  {
+    date: '2026-06-11',
+    event: '5월 소비자물가지수 (CPI YoY)',
+    actual: null,
+    forecast: '3.3%',
+    previous: '3.4%',
+    importance: 'high',
+    category: 'indicator',
+    description: '소비재 및 서비스의 가격 변동을 측정하는 미국 경제의 대표적인 물가 지표입니다.',
+    impactCommentary: 'FOMC 회의 바로 전날 또는 당일 발표되는 경우가 많아 시장 극강의 변동성을 불러옵니다. 금리 인하 시점을 결정짓는 가장 직접적인 변수입니다.'
+  },
+  {
+    date: '2026-06-12',
+    event: 'FOMC 정례 회의 1일차',
+    actual: null,
+    forecast: '-',
+    previous: '-',
+    importance: 'high',
+    category: 'fed',
+    description: '연방준비제도 이사들이 모여 기준금리를 결정하는 이틀간의 회의 중 첫날입니다.',
+    impactCommentary: '회의 기간 중 특별한 공식 성명은 없으나 위원들의 발언이나 유출 이슈 등에 따라 채권 시장이 매우 민감하게 반응할 수 있습니다.'
+  },
+  {
+    date: '2026-06-12',
+    event: '5월 생산자물가지수 (PPI YoY)',
+    actual: null,
+    forecast: '2.1%',
+    previous: '2.2%',
+    importance: 'high',
+    category: 'indicator',
+    description: '국내 생산자가 공급하는 상품 및 서비스의 가격 변동을 나타내는 도매 물가 지표입니다.',
+    impactCommentary: 'CPI의 선행 지표 성격을 띠기 때문에, 도매 물가 둔화가 확인되면 향후 소비자 물가도 동반 둔화될 것이라는 안도감을 형성합니다.'
+  },
+  {
+    date: '2026-06-13',
+    event: 'FOMC 기준금리 결정 & 파월 기자회견',
+    actual: null,
+    forecast: '5.25% - 5.50%',
+    previous: '5.25% - 5.50%',
+    importance: 'high',
+    category: 'fed',
+    description: '기준금리 동결 여부 발표 및 점도표(Dot Plot), 연준 의장의 기자회견이 포함된 시장 최고 중요 이벤트입니다.',
+    impactCommentary: '금리 동결 시에도 함께 공개되는 점도표 상 연내 금리 인하 횟수 전망 변화와 파월 의장의 매파/비둘기파적 발언 뉘앙스에 따라 증시 방향성이 크게 갈립니다.'
+  },
+  {
+    date: '2026-06-15',
+    event: '5월 미국 소매판매 (Retail Sales MoM)',
+    actual: null,
+    forecast: '0.3%',
+    previous: '0.2%',
+    importance: 'high',
+    category: 'indicator',
+    description: '미국 소비자들이 매장 등에서 지출한 총액의 월간 변동률입니다.',
+    impactCommentary: '미국 GDP의 70%가 소비로 이루어져 있는 만큼, 소비의 실질 체력을 나타내며 경기 침체 여부를 판별하는 핵심 척도입니다.'
+  },
+  {
+    date: '2026-06-18',
+    event: '제롬 파월 연준 의장 이코노믹 클럽 대담',
+    actual: null,
+    forecast: '-',
+    previous: '-',
+    importance: 'high',
+    category: 'fed',
+    description: '파월 연준 의장이 공식 석상에 나와 현재 통화정책 경로와 경제 상태에 대해 토론을 펼칩니다.',
+    impactCommentary: 'FOMC 금리 결정 직후인 만큼, 추가적인 힌트가 제기될 가능성이 있어 투자자들이 이목을 집중시키는 주요 이벤트입니다.'
+  },
+  {
+    date: '2026-06-19',
+    event: '준틴스 국경일 (미국 증시 휴장)',
+    actual: null,
+    forecast: '-',
+    previous: '-',
+    importance: 'high',
+    category: 'market',
+    description: '미국의 노예해방 기념일인 준틴스(Juneteenth)로 금융시장 전체가 휴장합니다.',
+    impactCommentary: '주중 휴장으로 시장의 거래 대금 활력이 전반적으로 떨어질 수 있습니다.'
+  },
+  {
+    date: '2026-06-21',
+    event: '미국 선물옵션 동시 만기일 (Quadruple Witching)',
+    actual: null,
+    forecast: '-',
+    previous: '-',
+    importance: 'high',
+    category: 'market',
+    description: '지수 선물, 지수 옵션, 개별 주식 옵션, 개별 주식 선물이 동시에 만기되는 날입니다.',
+    impactCommentary: '통상 3, 6, 9, 12월 셋째 주 금요일에 발생하며, 장 마감 무렵 기관들의 대규모 포트폴리오 리밸런싱과 롤오버로 인해 극심한 장중 거래량 폭발과 주가 흔들림 현상이 발생합니다.'
+  },
+  {
+    date: '2026-06-28',
+    event: '5월 PCE 개인소비지출 물가지수 (YoY)',
+    actual: null,
+    forecast: '2.6%',
+    previous: '2.7%',
+    importance: 'high',
+    category: 'indicator',
+    description: '5월 한 달간의 연준 선호 근원 PCE 물가 상승 지표입니다.',
+    impactCommentary: '인플레이션 둔화 추세가 잘 정착되고 있는지 확인하기 위한 마지막 조각입니다.'
+  },
+  {
+    date: '2026-07-02',
+    event: '연준 베이지북 공개 (Beige Book)',
+    actual: null,
+    forecast: '-',
+    previous: '-',
+    importance: 'medium',
+    category: 'fed',
+    description: '미국 12개 연방준비은행 관할 지역의 경기 판단 동향을 요약한 보고서입니다.',
+    impactCommentary: '실제 현장 실물경기가 뜨거운지 차갑게 식어가고 있는지 연준 위원들의 시각을 담아내어 향후 통화정책 방향의 기초 자료로 활용됩니다.'
+  },
+  {
+    date: '2026-07-04',
+    event: '미국 독립기념일 (증시 휴장)',
+    actual: null,
+    forecast: '-',
+    previous: '-',
+    importance: 'high',
+    category: 'market',
+    description: 'Independence Day 연방 공휴일로 금융 시장이 문을 닫습니다.',
+    impactCommentary: '미국의 최대 명절 중 하나로 연휴 기간 소비 지표 호재 기대감이 주중에 반영될 수 있습니다.'
+  },
+  {
+    date: '2026-07-04',
+    event: '6월 비농업 고용지수 & 실업률',
+    actual: null,
+    forecast: '170K / 4.0%',
+    previous: '185K / 3.9%',
+    importance: 'high',
+    category: 'indicator',
+    description: '6월 한 달간 미국 일자리 창출 체력과 실질 실업률 상황입니다.',
+    impactCommentary: '실업률이 심리적 마지노선인 4.0%로 올라서는지가 주요 관전 포인트입니다.'
+  },
+  {
+    date: '2026-07-12',
+    event: '6월 소비자물가지수 (CPI YoY)',
+    actual: null,
+    forecast: '3.1%',
+    previous: '3.3%',
+    importance: 'high',
+    category: 'indicator',
+    description: '미국 인플레이션의 전반적인 하향 안정 흐름을 판독할 6월 CPI 결과입니다.',
+    impactCommentary: '3.0% 벽 아래로 진입할 조짐이 보인다면 금리 인하 기대가 한층 더 공고해집니다.'
+  },
+  {
+    date: '2026-07-15',
+    event: '러셀 지수 연례 리밸런싱 (Russell Rebalance)',
+    actual: null,
+    forecast: '-',
+    previous: '-',
+    importance: 'medium',
+    category: 'market',
+    description: 'FTSE 러셀이 주관하는 미국 러셀 1000/2000/3000 지수의 편입/편출 구성 종목 조정이 최종 시행됩니다.',
+    impactCommentary: '중소형주 위주의 대규모 수급 유입 및 이탈이 강하게 나타나므로, 리밸런싱 해당 종목들의 급등락에 유의해야 합니다.'
+  },
+  {
+    date: '2026-07-24',
+    event: 'Alphabet 2분기 실적 발표 (어닝)',
+    actual: null,
+    forecast: 'EPS $1.85',
+    previous: 'EPS $1.44',
+    importance: 'high',
+    category: 'earnings',
+    ticker: 'GOOGL',
+    description: '구글 모기업 알파벳의 분기 어닝 릴리즈입니다.',
+    impactCommentary: '클라우드 부문 성장률과 광고 단가 흐름, 그리고 AI 검색 도입 효과가 실적에 어떻게 영향을 미쳤는지 집중 분석됩니다.'
+  },
+  {
+    date: '2026-07-28',
+    event: 'Apple 2분기 실적 발표 (어닝)',
+    actual: null,
+    forecast: 'EPS $1.51',
+    previous: 'EPS $1.40',
+    importance: 'high',
+    category: 'earnings',
+    ticker: 'AAPL',
+    description: '시가총액 1위 기업 애플의 분기 매출 및 EPS 발표입니다.',
+    impactCommentary: '아이폰 출하량 동향과 서비스 부문 매출 성장세가 글로벌 하드웨어 및 모바일 생태계의 향방을 시사합니다.'
+  },
+  {
+    date: '2026-07-29',
+    event: 'Microsoft 2분기 실적 발표 (어닝)',
+    actual: null,
+    forecast: 'EPS $3.10',
+    previous: 'EPS $2.94',
+    importance: 'high',
+    category: 'earnings',
+    ticker: 'MSFT',
+    description: '마이크로소프트의 클라우드(Azure) 및 소프트웨어 어닝 릴리즈입니다.',
+    impactCommentary: '애저(Azure) 클라우드의 성장률 둔화 유무 및 코파일럿(Copilot) 매출 기여도가 주요 관전 포인트입니다.'
+  }
 ];
 
 // ─── Stock Universe ───────────────────── 2026-05-22 실제 종가 기준 ───────────
