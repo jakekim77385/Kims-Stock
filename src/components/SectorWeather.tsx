@@ -114,10 +114,13 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'ARQQ', name: '아킷 퀀텀 (Arqit Quantum)', weight: '양자 암호', desc: '양자 컴퓨터 시대의 해킹을 방어하는 대칭 키 클라우드 보안 소프트웨어 선두주자' }
   ],
   'SOXX': [
-    { ticker: 'NVDA', name: 'NVIDIA Corp.', weight: '8.5%', desc: 'H100, B200 등 AI 시대의 핵심 연산 칩 설계 독점' },
-    { ticker: 'AVGO', name: 'Broadcom Inc.', weight: '8.0%', desc: '네트워크 통신 반도체 대장 및 맞춤형 주문형 반도체(ASIC) 1위' },
-    { ticker: 'AMD', name: 'Advanced Micro Devices', weight: '6.5%', desc: 'CPU 및 고성능 AI 가속기(MI300) 설계 분야의 엔비디아 유일 대항마' },
-    { ticker: 'QCOM', name: 'Qualcomm', weight: '5.2%', desc: '스마트폰 AP 스냅드래곤 공급 및 온디바이스 AI 반도체 선두' }
+    { ticker: 'MRVL', name: '마벨 테크놀로지 (Marvell Technology)', weight: 'ASIC/통신', desc: '고성능 맞춤형 주문형 반도체(ASIC) 및 광통신 DSP 최강자, AI 데이터센터 고속 연결 네트워크 핵심 수혜주' },
+    { ticker: 'AMD', name: 'AMD (Advanced Micro Devices)', weight: 'CPU/GPU', desc: '고성능 x86 CPU 독과점 및 AI 가속기(MI300) 시장에서 엔비디아에 대적하는 독보적 대안 팹리스 설계사' },
+    { ticker: 'TSM', name: 'TSMC (Taiwan Semiconductor)', weight: '파운드리', desc: '세계 최대 반도체 위탁생산(파운드리) 1위이자 첨단 미세 공정 패키징 독점 생산 능력을 가진 글로벌 반도체 생산의 척도' },
+    { ticker: 'AVGO', name: '브로드컴 (Broadcom Inc.)', weight: '네트워크/통신', desc: '글로벌 통신 칩셋 리더 및 구글/메타 맞춤형 AI 가속기 공동 설계 1위, 최상급 고속 이더넷 스위치 칩 최강자' },
+    { ticker: 'SMCI', name: '슈퍼 마이크로 컴퓨터 (Super Micro Computer)', weight: 'AI 서버', desc: '고성능 AI 가속기 장착 랙(Rack) 및 첨단 액체 냉각(Liquid Cooling) 솔루션 공급을 주도하는 AI 인프라 핵심 기업' },
+    { ticker: 'MU', name: '마이크론 테크놀로지 (Micron Technology)', weight: 'DRAM/HBM', desc: 'AI 연산 속도를 결정짓는 차세대 고대역폭 메모리(HBM3E) 및 초성능 서버용 DRAM 공급을 리드하는 3대 메모리 거인' },
+    { ticker: 'INTC', name: '인텔 (Intel Corp.)', weight: 'IDM/파운드리', desc: '전통의 PC/서버용 x86 CPU 최강자이자 미국 정부 반도체법 최대 지원 수혜를 입은 종합 반도체 제조 및 파운드리 재건 스타트업' }
   ],
   'XLE': [
     { ticker: 'XOM', name: 'ExxonMobil Corp.', weight: '22.8%', desc: '미국 최대 종합 석유/가스 기업, 시추 및 화학 고른 포트폴리오' },
