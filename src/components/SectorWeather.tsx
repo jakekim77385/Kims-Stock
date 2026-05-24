@@ -86,11 +86,15 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'FSM', name: 'Fortuna Silver Mines', weight: '대표 광산', desc: '남미 및 서아프리카 중심의 은/금 생산 성장형 광산사' }
   ],
   'XLF': [
-    { ticker: 'BRK-B', name: 'Berkshire Hathaway', weight: '13.2%', desc: '워런 버핏의 지주사, 보험 및 전방위 자회사 보유' },
-    { ticker: 'JPM', name: 'JPMorgan Chase', weight: '9.4%', desc: '미국 최대 상업/투자 은행, 연준 파트너 격 금융사' },
-    { ticker: 'V', name: 'Visa Inc.', weight: '8.2%', desc: '세계 최대 결제 네트워크, 높은 영업이익률의 핀테크 독점' },
-    { ticker: 'MA', name: 'Mastercard', weight: '6.8%', desc: '비자와 양대 산맥을 이루는 글로벌 금융 결제 시스템' },
-    { ticker: 'BAC', name: 'Bank of America', weight: '5.5%', desc: '자산 기준 미국 2대 대형 상업 은행' }
+    { ticker: 'BRK-B', name: '버크셔 해서웨이 (Berkshire Hathaway)', weight: '금융 지주', desc: '워런 버핏이 이끄는 세계 최대의 금융 투자 지주사이자 보험/투자 전방위 자회사 보유 거인' },
+    { ticker: 'JPM', name: 'JP모건 체이스 (JPMorgan Chase)', weight: '대형 은행', desc: '미국 자산 및 자본금 기준 글로벌 1위이자 정통 상업 및 투자 은행(IB)의 절대 강자' },
+    { ticker: 'BAC', name: '뱅크 오브 아메리카 (Bank of America)', weight: '대형 은행', desc: '자산 기준 미국 2대 상업 은행으로 두터운 미국 소매 및 기업 금융의 탄탄한 전통 강자' },
+    { ticker: 'WFC', name: '웰스파고 (Wells Fargo)', weight: '대형 은행', desc: '미국 내 주택담보대출(모기지) 및 개인 소매 금융 지배력을 자랑하는 미국 금융 시스템의 중심축' },
+    { ticker: 'C', name: '씨티그룹 (Citigroup)', weight: '대형 은행', desc: '전 세계 가장 널리 분포한 소매 금융망(Citibank)과 글로벌 결제 시스템 인프라를 지배하는 다국적 금융 거인' },
+    { ticker: 'GS', name: '골드만삭스 (Goldman Sachs)', weight: '투자 은행', desc: '글로벌 M&A 자문, 투자 자산 운용 및 자산 관리(WM) 시장을 리드하는 세계 최고의 정통 투자 은행' },
+    { ticker: 'MS', name: '모건스탠리 (Morgan Stanley)', weight: '투자 은행', desc: '글로벌 자산 관리(Wealth Management) 및 메이저 투자 자문 시장을 지배하는 초대형 금융 서비스 명가' },
+    { ticker: 'V', name: '비자 (Visa Inc.)', weight: '결제 네트워크', desc: '전 세계 신용 결제 네트워크 점유율 독보적 1위이자 초고마진 현금 흐름을 창출하는 디지털 금융망 거인' },
+    { ticker: 'MA', name: '마스터카드 (Mastercard)', weight: '결제 네트워크', desc: '비자와 더불어 전 세계 국경 간 금융 결제 및 카드 가맹 네트워크를 과점 지배하는 핀테크 공룡' }
   ],
   'MGK': [
     { ticker: 'MSFT', name: '마이크로소프트 (Microsoft Corp.)', weight: 'M7 대장', desc: '윈도우/오피스 소프트웨어 독점, Azure AI 클라우드 인프라 및 OpenAI 협력 모델 리더' },
