@@ -776,8 +776,8 @@ function AnalysisContent() {
                 <XAxis dataKey="year" tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 11 }} />
                 <Tooltip contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: 8, fontSize: 12 }} />
-                <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} name="매출" />
-                <Bar dataKey="eps" fill="#10b981" radius={[4, 4, 0, 0]} name="EPS" />
+                <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} name="매출" isAnimationActive={false} />
+                <Bar dataKey="eps" fill="#10b981" radius={[4, 4, 0, 0]} name="EPS" isAnimationActive={false} />
                 <Legend />
               </BarChart>
             </ResponsiveContainer>
@@ -801,9 +801,9 @@ function AnalysisContent() {
                   contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: 8, fontSize: 12 }}
                 />
                 <Legend />
-                <Line type="monotone" dataKey="gross" stroke="#3b82f6" strokeWidth={2} dot={{ r: 3 }} name="매출총이익률" />
-                <Line type="monotone" dataKey="operating" stroke="#10b981" strokeWidth={2} dot={{ r: 3 }} name="영업이익률" />
-                <Line type="monotone" dataKey="net" stroke="#f59e0b" strokeWidth={2} dot={{ r: 3 }} name="순이익률" />
+                <Line type="monotone" dataKey="gross" stroke="#3b82f6" strokeWidth={2} dot={{ r: 3 }} name="매출총이익률" isAnimationActive={false} />
+                <Line type="monotone" dataKey="operating" stroke="#10b981" strokeWidth={2} dot={{ r: 3 }} name="영업이익률" isAnimationActive={false} />
+                <Line type="monotone" dataKey="net" stroke="#f59e0b" strokeWidth={2} dot={{ r: 3 }} name="순이익률" isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -1000,7 +1000,7 @@ function AnalysisContent() {
                           />
                           <ReferenceLine y={80} stroke="#ef4444" strokeWidth={1} strokeDasharray="3 3" />
                           <ReferenceLine y={20} stroke="#10b981" strokeWidth={1} strokeDasharray="3 3" />
-                          <Line type="monotone" dataKey="short" stroke="#f59e0b" strokeWidth={1.5} dot={false} />
+                          <Line type="monotone" dataKey="short" stroke="#f59e0b" strokeWidth={1.5} dot={false} isAnimationActive={false} />
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
@@ -1034,7 +1034,7 @@ function AnalysisContent() {
                           />
                           <ReferenceLine y={80} stroke="#ef4444" strokeWidth={1} strokeDasharray="3 3" />
                           <ReferenceLine y={20} stroke="#10b981" strokeWidth={1} strokeDasharray="3 3" />
-                          <Line type="monotone" dataKey="mid" stroke="#8b5cf6" strokeWidth={1.5} dot={false} />
+                          <Line type="monotone" dataKey="mid" stroke="#8b5cf6" strokeWidth={1.5} dot={false} isAnimationActive={false} />
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
@@ -1068,7 +1068,7 @@ function AnalysisContent() {
                           />
                           <ReferenceLine y={80} stroke="#ef4444" strokeWidth={1} strokeDasharray="3 3" />
                           <ReferenceLine y={20} stroke="#10b981" strokeWidth={1} strokeDasharray="3 3" />
-                          <Line type="monotone" dataKey="long" stroke="#3b82f6" strokeWidth={1.5} dot={false} />
+                          <Line type="monotone" dataKey="long" stroke="#3b82f6" strokeWidth={1.5} dot={false} isAnimationActive={false} />
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
