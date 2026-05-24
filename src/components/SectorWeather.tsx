@@ -130,16 +130,19 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'INTC', name: '인텔 (Intel Corp.)', weight: 'IDM/파운드리', desc: '전통의 PC/서버용 x86 CPU 최강자이자 미국 정부 반도체법 최대 지원 수혜를 입은 종합 반도체 제조 및 파운드리 재건 스타트업' }
   ],
   'XLE': [
-    { ticker: 'XOM', name: 'ExxonMobil Corp.', weight: '22.8%', desc: '미국 최대 종합 석유/가스 기업, 시추 및 화학 고른 포트폴리오' },
-    { ticker: 'CVX', name: 'Chevron Corp.', weight: '18.4%', desc: '미국 2대 석유 메이저, 천연가스 및 LNG 생산 강세' },
-    { ticker: 'COP', name: 'ConocoPhillips', weight: '8.2%', desc: '셰일오일 시추 전문 업스트림 분야 최대 독립 에너지사' },
-    { ticker: 'SLB', name: 'Schlumberger', weight: '5.5%', desc: '세계 최대 유전 서비스 및 정밀 시추 시뮬레이션 솔루션 기업' }
+    { ticker: 'XOM', name: '엑슨 모빌 (ExxonMobil Corp.)', weight: '오일 메이저', desc: '미국 최대이자 글로벌 1위 종합 에너지 기업, 시추부터 화학 정제까지 수직계열화 구축' },
+    { ticker: 'CVX', name: '셰브론 (Chevron Corp.)', weight: '오일 메이저', desc: '미국 2대 석유 메이저, 천연가스 및 LNG 글로벌 공급망 강세를 지닌 자원 거인' },
+    { ticker: 'COP', name: '코노코필립스 (ConocoPhillips)', weight: '셰일 오일', desc: '셰일오일 시추 및 탐사(E&P) 업스트림 분야 미국 최대 규모의 독립 에너지 기업' },
+    { ticker: 'SLB', name: '슐럼버저 (Schlumberger)', weight: '유전 서비스', desc: '세계 최대 유전 정밀 서비스 및 첨단 데이터 기반 시추 최적화 솔루션 1위 기업' }
   ],
   'NLR': [
-    { ticker: 'CEG', name: 'Constellation Energy', weight: '12.4%', desc: '미국 최대의 원자력 발전 운영사, 테크 데이터센터에 전력 다이렉트 공급' },
-    { ticker: 'CCJ', name: 'Cameco Corp.', weight: '9.8%', desc: '캐나다의 세계 최대 우라늄 광산 시추 및 가공 전문 기업' },
-    { ticker: 'SMR', name: 'NuScale Power', weight: '대표 혁신', desc: '소형 모듈 원자로(SMR) 설계 분야 미국 최초 규제 승인 획득사' },
-    { ticker: 'OKLO', name: 'Oklo Inc.', weight: '대표 혁신', desc: '샘 올트먼이 이사회 의장으로 있는 소형 고속 핵분열 발전소 혁신 스타트업' }
+    { ticker: 'CEG', name: '콘스텔레이션 에너지 (Constellation Energy)', weight: '원전 운영 1위', desc: '미국 최대의 원자력 발전소 운영사로 빅테크(MSFT 등) 데이터센터에 무탄소 기저 부하 전력 독점 공급' },
+    { ticker: 'VST', name: '비스트라 에너지 (Vistra Corp.)', weight: '원전/전력', desc: '급성장하는 초대형 발전사로 대규모 원자력 및 ESS 인프라를 바탕으로 AI 데이터센터 전력 수혜 최대 대장주' },
+    { ticker: 'TLN', name: '탈런 에너지 (Talen Energy Corp.)', weight: '원전/전력', desc: '나스닥 상장 대형 발전사로 아마존 AWS AI 데이터센터에 원자력 전력을 24시간 직접 공급하는 핵심 파트너' },
+    { ticker: 'CCJ', name: '카메코 (Cameco Corp.)', weight: '우라늄 광산', desc: '캐나다에 위치한 세계 최대 규모의 우라늄 시추 및 가공 핵연료 공급망 지배 기업' },
+    { ticker: 'SMR', name: '뉴스케일파워 (NuScale Power)', weight: 'SMR 혁신', desc: '소형 모듈 원자로(SMR) 설계 승인을 최초 획득하며 차세대 SMR 표준을 리드하는 기업' },
+    { ticker: 'OKLO', name: '오클로 (Oklo Inc.)', weight: 'SMR 혁신', desc: '샘 올트먼이 주도하는 소형 고속 핵분열 발전소 개발 및 폐연료 재활용 혁신 스타트업' },
+    { ticker: 'NNE', name: '나노 뉴클리어 (Nano Nuclear Energy)', weight: '마이크로 원자로', desc: '우주 탐사 및 군사용 초소형 마이크로 원자로(SMR) 개발 및 가동용 핵연료 수송/서비스 혁신사' }
   ],
   'BOTZ': [
     { ticker: 'NVDA', name: '엔비디아 (NVIDIA Corp.)', weight: '연산 두뇌', desc: 'AI 모델 트레이닝, 물리 로봇 자율주행 및 시뮬레이션의 근간인 고성능 GPU 인프라 공급 독점' },
