@@ -89,6 +89,8 @@ export interface StockQuote {
   currency:  string;
   exchange:  string;
   timestamp: number;
+  change1wPct?: number | null;
+  price1wAgo?:  number | null;
 }
 
 export function useQuote(ticker: string, intervalMs = 60_000) {

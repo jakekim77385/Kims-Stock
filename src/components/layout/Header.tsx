@@ -15,7 +15,11 @@ export default function Header() {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && query.trim()) {
-      router.push(`/analysis?ticker=${query.trim().toUpperCase()}`);
+      if (searchResults && searchResults.length > 0) {
+        router.push(`/analysis?ticker=${searchResults[0].ticker}`);
+      } else {
+        router.push(`/analysis?ticker=${query.trim().toUpperCase()}`);
+      }
       setQuery('');
       setShowSearch(false);
     }

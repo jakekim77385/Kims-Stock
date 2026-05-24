@@ -8,7 +8,7 @@ import {
   Terminal, Dna, ShoppingBag, ShoppingCart, Home, Factory, Layers, Heart,
   Bitcoin
 } from 'lucide-react';
-import { useQuotes } from '@/lib/hooks';
+import { useQuotes, type StockQuote } from '@/lib/hooks';
 
 // ─── 사용자 지정 20개 섹터 순서 및 매핑 메타데이터 ───────────────────────────────
 const BENCHMARK = '^GSPC';
@@ -145,8 +145,8 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'NNE', name: '나노 뉴클리어 (Nano Nuclear Energy)', weight: '마이크로 원자로', desc: '우주 탐사 및 군사용 초소형 마이크로 원자로(SMR) 개발 및 가동용 핵연료 수송/서비스 혁신사' }
   ],
   'BOTZ': [
-    { ticker: 'NVDA', name: '엔비디아 (NVIDIA Corp.)', weight: '연산 두뇌', desc: 'AI 모델 트레이닝, 물리 로봇 자율주행 및 시뮬레이션의 근간인 고성능 GPU 인프라 공급 독점' },
-    { ticker: 'ISRG', name: '인튜이티브 서지컬 (Intuitive Surgical)', weight: '의료 로봇', desc: '세계 최고 정밀 수술용 다빈치(DaVinci) 로봇 제조 및 소모품 수수료 비즈니스 독점 모델' },
+    { ticker: 'PATH', name: '유아이패스 (UiPath Inc.)', weight: 'RPA/AI 자동화', desc: '글로벌 1위 로봇 프로세스 자동화(RPA) 기업으로 AI 에이전트와 소프트웨어 로봇의 융합 시장 선도' },
+    { ticker: 'ISRG', name: '인튜이티브 서지컬 (Intuitive Surgical)', weight: '의료 로봇', desc: '세계 최고 정밀 수술용 다빈치(DaVinci) 로봇 제조 및 소모품 수수료 비즈념 독점 모델' },
     { ticker: 'SYM', name: '심보틱 (Symbotic Inc.)', weight: '물류 자동화', desc: 'AI 기반의 초대형 스마트 물류창고 자율주행(AMR) 로봇 시스템 공급 선두주자 (월마트 파트너)' },
     { ticker: 'ANSS', name: '앤시스 (Ansys Inc.)', weight: '시뮬레이션', desc: '자율주행 및 물리 로봇 설계를 가상으로 테스트하고 검증하는 글로벌 공학 시뮬레이션 소프트웨어 대장' },
     { ticker: 'PLTR', name: '팔란티어 (Palantir Technologies)', weight: 'AI 소프트웨어', desc: '미 국방부 및 글로벌 500대 기업의 빅데이터 인공지능 통합 분석 플랫폼(AIP) 시장을 장악한 실전용 AI 최강자' }
@@ -170,11 +170,11 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'AMGN', name: '암젠 (Amgen Inc.)', weight: '바이오 메이저', desc: '바이오 의약품 산업을 개척한 글로벌 1세대 대형 바이오 기업으로 골다공증 및 면역학 강자' },
     { ticker: 'GILD', name: '길리어드 (Gilead Sciences)', weight: '바이오 메이저', desc: 'HIV(에이즈) 치료제 글로벌 독점 및 코로나 치료제 레데시비르, 항암 면역 세포 치료 강자' },
     { ticker: 'MRNA', name: '모더나 (Moderna Inc.)', weight: 'mRNA 혁신', desc: '코로나19 백신 개발을 통해 mRNA 플랫폼 기술력을 세계에 입증한 차세대 암 백신 및 면역 신약 개척사' },
-    { ticker: 'PFE', name: '화이자 (Pfizer Inc.)', weight: '빅파마/백신', desc: '코로나19 mRNA 백신 및 팍스로비드 치료제 신화를 썼으며, 적극적인 항암 파이프라인 인수로 성장하는 백신/제약 명가' }
+    { ticker: 'BIIB', name: '바이오젠 (Biogen Inc.)', weight: '신경질환 바이오텍', desc: '치매 및 신경퇴행성 질환 치료제(레켐비 등)를 선도적으로 개발하는 글로벌 정통 바이오텍 기업' }
   ],
   'XLY': [
-    { ticker: 'AMZN', name: 'Amazon.com Inc.', weight: '22.8%', desc: '글로벌 e커머스 1위 및 물류/배송 인프라 지배자' },
-    { ticker: 'TSLA', name: 'Tesla Inc.', weight: '14.2%', desc: '자율주행 및 전기차 리더, 장기 로보택시 및 로봇 혁신 기대주' },
+    { ticker: 'NKE', name: '나이키 (Nike Inc.)', weight: '의류/소비재', desc: '세계 최대 스포츠 패션 의류 및 브랜드 소비재 최강 기업' },
+    { ticker: 'SBUX', name: '스타벅스 (Starbucks Corp.)', weight: '프랜차이즈 식음료', desc: '글로벌 1위 커피 프랜차이즈 및 고객 충성도 중심 소비재 거인' },
     { ticker: 'HD', name: 'Home Depot Inc.', weight: '8.4%', desc: '미국 최대 주택 건축 자재 소매점, 미국 경기 소비의 척도' },
     { ticker: 'MCD', name: 'McDonald\'s Corp.', weight: '5.2%', desc: '글로벌 프랜차이즈 식음료 1위 및 고정 부동산 금융 지배자' }
   ],
@@ -308,9 +308,122 @@ function getSectorWeather(changePct: number, rangePos: number): keyof typeof WEA
   return 'cloudy';
 }
 
+interface TechnicalAnalysisResult {
+  label: string;
+  pos: number;
+  badgeBg: string;
+  badgeColor: string;
+  desc: string;
+}
+
+function analyzeTechnical(price: number, low52w: number, high52w: number): TechnicalAnalysisResult {
+  if (!high52w || !low52w || high52w <= low52w) {
+    return {
+      label: '⚖️ 데이터 분석 중',
+      pos: 50,
+      badgeBg: 'rgba(71, 85, 105, 0.08)',
+      badgeColor: '#475569',
+      desc: '52주 데이터 부족으로 분석 불가'
+    };
+  }
+  
+  const pos = Math.max(0, Math.min(100, Math.round(((price - low52w) / (high52w - low52w)) * 100)));
+  
+  if (price >= high52w * 0.985) {
+    return {
+      label: '🔥 52주 신고가 돌파',
+      pos,
+      badgeBg: 'rgba(239, 68, 68, 0.08)',
+      badgeColor: '#ef4444',
+      desc: '52주 최고가 부근에서 강력한 매수 에너지 분출 및 상승세'
+    };
+  }
+  
+  if (price <= low52w * 1.015) {
+    return {
+      label: '❄️ 52주 최저점 갱신',
+      pos,
+      badgeBg: 'rgba(59, 130, 246, 0.08)',
+      badgeColor: '#2563eb',
+      desc: '52주 최저점 부근 과매도 구간. 바닥 지지력 탐색 및 지지 테스트'
+    };
+  }
+  
+  if (pos >= 80) {
+    return {
+      label: '📈 박스권 상단 대기',
+      pos,
+      badgeBg: 'rgba(245, 158, 11, 0.08)',
+      badgeColor: '#d97706',
+      desc: '최근 상승 채널 상단 도달, 전고점 돌파를 위한 에너지를 모으는 횡보 흐름'
+    };
+  }
+  
+  if (pos <= 20) {
+    return {
+      label: '📉 박스권 하단 지지',
+      pos,
+      badgeBg: 'rgba(139, 92, 246, 0.08)',
+      badgeColor: '#7c3aed',
+      desc: '최근 조정 채널 하단 도달, 바닥 지지선 구축 및 저가 매수세 유입 기대'
+    };
+  }
+  
+  if (pos >= 40 && pos <= 60) {
+    return {
+      label: '🔄 박스권 중단 횡보',
+      pos,
+      badgeBg: 'rgba(16, 185, 129, 0.08)',
+      badgeColor: '#059669',
+      desc: '중간 단가 부근에서 뚜렷한 방향성 없이 매집 중이며 수주째 안정적 횡보 지속'
+    };
+  }
+  
+  return {
+    label: '⚖️ 박스권 안정 구간',
+    pos,
+    badgeBg: 'rgba(100, 116, 139, 0.08)',
+    badgeColor: '#475569',
+    desc: '상/하방 균형을 유지하며 적정 가치 박스권 대역 내에서 완만하게 움직임'
+  };
+}
+
 export default function SectorWeather() {
   const { data: quotes, loading: quotesLoading, refresh } = useQuotes(ALL_TICKERS, 60_000);
   const [selectedTicker, setSelectedTicker] = useState<string | null>(null);
+  const [holdingQuotes, setHoldingQuotes] = useState<StockQuote[]>([]);
+  const [holdingLoading, setHoldingLoading] = useState(false);
+
+  useEffect(() => {
+    if (!selectedTicker) {
+      setHoldingQuotes([]);
+      return;
+    }
+    
+    const holdings = SECTOR_HOLDINGS[selectedTicker] || [];
+    const tickers = holdings.map(h => h.ticker).filter(Boolean);
+    
+    if (tickers.length === 0) {
+      setHoldingQuotes([]);
+      return;
+    }
+    
+    setHoldingLoading(true);
+    fetch(`/api/quotes?tickers=${tickers.join(',')}&include1w=true`)
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        setHoldingQuotes(data.quotes || []);
+      })
+      .catch(err => {
+        console.error('Failed to fetch holding quotes:', err);
+      })
+      .finally(() => {
+        setHoldingLoading(false);
+      });
+  }, [selectedTicker]);
 
   if (quotesLoading && !quotes) {
     return (
@@ -703,7 +816,7 @@ export default function SectorWeather() {
           >
             <div style={{
               background: 'white', borderRadius: 12, border: '1px solid #e2e8f0',
-              width: '100%', maxWidth: 680, padding: 24, boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)',
+              width: '95%', maxWidth: 1024, padding: 24, boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)',
               position: 'relative', display: 'flex', flexDirection: 'column', gap: 16
             }}
             onClick={(e) => e.stopPropagation()}
@@ -759,45 +872,204 @@ export default function SectorWeather() {
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11.5, textAlign: 'left' }}>
                   <thead>
                     <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-                      <th style={{ padding: '10px 14px', color: '#475569', fontWeight: 700, width: 50 }}>순위</th>
-                      <th style={{ padding: '10px 14px', color: '#475569', fontWeight: 700 }}>종목명(티커)</th>
-                      <th style={{ padding: '10px 14px', color: '#475569', fontWeight: 700, width: 90 }}>ETF 내 비중</th>
-                      <th style={{ padding: '10px 14px', color: '#475569', fontWeight: 700 }}>역할 및 핵심 가치</th>
-                      <th style={{ padding: '10px 14px', color: '#475569', fontWeight: 700, width: 70, textAlign: 'center' }}>분석</th>
+                      <th style={{ padding: '12px 14px', color: '#475569', fontWeight: 700, width: 50 }}>순위</th>
+                      <th style={{ padding: '12px 14px', color: '#475569', fontWeight: 700, width: 140 }}>종목명(티커)</th>
+                      <th style={{ padding: '12px 14px', color: '#475569', fontWeight: 700, width: 110 }}>투자 테마</th>
+                      <th style={{ padding: '12px 14px', color: '#475569', fontWeight: 700, width: 140 }}>실시간 현재가 (대비)</th>
+                      <th style={{ padding: '12px 14px', color: '#475569', fontWeight: 700, width: 230 }}>주가 위치 및 기술적 분석</th>
+                      <th style={{ padding: '12px 14px', color: '#475569', fontWeight: 700 }}>역할 및 핵심 가치</th>
+                      <th style={{ padding: '12px 14px', color: '#475569', fontWeight: 700, width: 70, textAlign: 'center' }}>분석</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {(SECTOR_HOLDINGS[selectedTicker] ?? []).map((h, i) => (
-                      <tr key={h.ticker} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background 0.1s' }}
-                        onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'white'}
-                      >
-                        <td style={{ padding: '10px 14px', fontFamily: 'JetBrains Mono', color: '#64748b', fontWeight: 700 }}>#{i + 1}</td>
-                        <td style={{ padding: '10px 14px' }}>
-                          <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontWeight: 700, color: '#1e293b' }}>{h.ticker}</span>
-                            <span style={{ fontSize: 9.5, color: '#64748b' }}>{h.name}</span>
-                          </div>
-                        </td>
-                        <td style={{ padding: '10px 14px', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--accent)' }}>{h.weight}</td>
-                        <td style={{ padding: '10px 14px', color: '#475569', lineHeight: 1.4 }}>{h.desc}</td>
-                        <td style={{ padding: '10px 14px', textAlign: 'center' }}>
-                          <Link 
-                            href={`/analysis?ticker=${h.ticker}`}
-                            onClick={() => setSelectedTicker(null)}
-                            style={{
-                              display: 'inline-block', padding: '3px 8px', fontSize: 10, fontWeight: 700,
-                              background: 'var(--accent-glow)', color: 'var(--accent)', borderRadius: 4,
-                              textDecoration: 'none', border: '1px solid var(--border-default)', transition: 'background 0.15s'
-                            }}
-                            onMouseEnter={e => e.currentTarget.style.background = '#e0eafe'}
-                            onMouseLeave={e => e.currentTarget.style.background = 'var(--accent-glow)'}
+                    <style>{`
+                      @keyframes pulse {
+                        0%, 100% { opacity: 1; }
+                        50% { opacity: 0.4; }
+                      }
+                    `}</style>
+                    {holdingLoading ? (
+                      Array.from({ length: (SECTOR_HOLDINGS[selectedTicker] ?? []).length }).map((_, idx) => (
+                        <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                          <td style={{ padding: '12px 14px' }}>
+                            <div style={{ height: 14, width: 20, background: '#e2e8f0', borderRadius: 4, animation: 'pulse 1.5s infinite ease-in-out' }} />
+                          </td>
+                          <td style={{ padding: '12px 14px' }}>
+                            <div style={{ height: 14, width: 80, background: '#e2e8f0', borderRadius: 4, animation: 'pulse 1.5s infinite ease-in-out', marginBottom: 4 }} />
+                            <div style={{ height: 10, width: 100, background: '#f1f5f9', borderRadius: 4, animation: 'pulse 1.5s infinite ease-in-out' }} />
+                          </td>
+                          <td style={{ padding: '12px 14px' }}>
+                            <div style={{ height: 14, width: 70, background: '#e2e8f0', borderRadius: 4, animation: 'pulse 1.5s infinite ease-in-out' }} />
+                          </td>
+                          <td style={{ padding: '12px 14px' }}>
+                            <div style={{ height: 14, width: 70, background: '#e2e8f0', borderRadius: 4, animation: 'pulse 1.5s infinite ease-in-out', marginBottom: 4 }} />
+                            <div style={{ height: 10, width: 55, background: '#f1f5f9', borderRadius: 4, animation: 'pulse 1.5s infinite ease-in-out', marginBottom: 3 }} />
+                            <div style={{ height: 10, width: 50, background: '#f1f5f9', borderRadius: 4, animation: 'pulse 1.5s infinite ease-in-out' }} />
+                          </td>
+                          <td style={{ padding: '12px 14px' }}>
+                            <div style={{ height: 16, width: 110, background: '#e2e8f0', borderRadius: 4, animation: 'pulse 1.5s infinite ease-in-out', marginBottom: 6 }} />
+                            <div style={{ height: 5, width: '100%', background: '#f1f5f9', borderRadius: 2.5 }} />
+                          </td>
+                          <td style={{ padding: '12px 14px' }}>
+                            <div style={{ height: 12, width: '90%', background: '#e2e8f0', borderRadius: 4, animation: 'pulse 1.5s infinite ease-in-out' }} />
+                          </td>
+                          <td style={{ padding: '12px 14px', textAlign: 'center' }}>
+                            <div style={{ height: 22, width: 50, background: '#e2e8f0', borderRadius: 4, animation: 'pulse 1.5s infinite ease-in-out', margin: '0 auto' }} />
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      (SECTOR_HOLDINGS[selectedTicker] ?? []).map((h, i) => {
+                        const quote = holdingQuotes.find(q => q.ticker.toUpperCase() === h.ticker.toUpperCase());
+                        const price = quote?.price ?? 0;
+                        const change = quote?.change ?? 0;
+                        const changePct = quote?.changePct ?? 0;
+                        const high52w = quote?.high52w ?? 0;
+                        const low52w = quote?.low52w ?? 0;
+                        
+                        const isUp = changePct >= 0;
+                        const hasData = !!quote;
+                        
+                        const tech = analyzeTechnical(price, low52w, high52w);
+
+                        return (
+                          <tr key={h.ticker} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background 0.1s' }}
+                            onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
+                            onMouseLeave={e => e.currentTarget.style.background = 'white'}
                           >
-                            분석 ➔
-                          </Link>
-                        </td>
-                      </tr>
-                    ))}
+                            <td style={{ padding: '12px 14px', fontFamily: 'JetBrains Mono', color: '#64748b', fontWeight: 700 }}>#{i + 1}</td>
+                            <td style={{ padding: '12px 14px' }}>
+                              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span style={{ fontWeight: 800, color: '#1e293b', fontFamily: 'JetBrains Mono' }}>{h.ticker}</span>
+                                <span style={{ fontSize: 9.5, color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 130 }} title={h.name}>{h.name}</span>
+                              </div>
+                            </td>
+                            <td style={{ padding: '12px 14px', fontWeight: 600, color: '#475569', fontSize: 11 }}>
+                              <span style={{ 
+                                background: 'rgba(30, 58, 138, 0.04)', 
+                                color: '#1e3a8a', 
+                                padding: '2.5px 6px', 
+                                borderRadius: 4,
+                                border: '1.5px solid rgba(30, 58, 138, 0.08)',
+                                display: 'inline-block'
+                              }}>
+                                {h.weight}
+                              </span>
+                            </td>
+                            <td style={{ padding: '12px 14px' }}>
+                              {hasData ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                                  <span style={{ fontWeight: 800, fontFamily: 'JetBrains Mono', fontSize: 12.5, color: '#0f172a' }}>
+                                    ${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                  </span>
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                    <span style={{ 
+                                      fontSize: 9, 
+                                      fontWeight: 700,
+                                      fontFamily: 'JetBrains Mono',
+                                      color: isUp ? 'var(--positive)' : 'var(--negative)',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: 1
+                                    }}>
+                                      <span style={{ color: '#64748b', fontWeight: 600 }}>1일:</span> {isUp ? '▲' : '▼'} {Math.abs(change).toFixed(2)} ({isUp ? '+' : ''}{changePct.toFixed(2)}%)
+                                    </span>
+                                    {quote.change1wPct !== undefined && quote.change1wPct !== null ? (
+                                      <span style={{ 
+                                        fontSize: 9, 
+                                        fontWeight: 700,
+                                        fontFamily: 'JetBrains Mono',
+                                        color: quote.change1wPct >= 0 ? 'var(--positive)' : 'var(--negative)',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: 1
+                                      }}>
+                                        <span style={{ color: '#64748b', fontWeight: 600 }}>1주:</span> {quote.change1wPct >= 0 ? '▲' : '▼'} {quote.change1wPct >= 0 ? '+' : ''}{quote.change1wPct}%
+                                      </span>
+                                    ) : (
+                                      <span style={{ fontSize: 9, color: '#94a3b8', fontFamily: 'JetBrains Mono', fontWeight: 600 }}>1주: -</span>
+                                    )}
+                                  </div>
+                                </div>
+                              ) : (
+                                <span style={{ fontSize: 10.5, color: '#94a3b8' }}>데이터 없음</span>
+                              )}
+                            </td>
+                            <td style={{ padding: '12px 14px' }}>
+                              {hasData ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 200 }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <span style={{ 
+                                      fontSize: 9.5, 
+                                      fontWeight: 850, 
+                                      color: tech.badgeColor, 
+                                      background: tech.badgeBg, 
+                                      padding: '2px 6px', 
+                                      borderRadius: 4,
+                                      display: 'inline-block',
+                                      border: `1px solid ${tech.badgeColor}22`
+                                    }}
+                                    title={tech.desc}
+                                    >
+                                      {tech.label}
+                                    </span>
+                                    <span style={{ fontSize: 9.5, color: '#64748b', fontFamily: 'JetBrains Mono', fontWeight: 600 }}>
+                                      52주 위치: {tech.pos}%
+                                    </span>
+                                  </div>
+                                  <div>
+                                    <div style={{ height: 5, background: '#f1f5f9', borderRadius: 2.5, position: 'relative' }}>
+                                      <div style={{ 
+                                        position: 'absolute', 
+                                        left: 0, 
+                                        top: 0, 
+                                        height: '100%', 
+                                        width: `${tech.pos}%`, 
+                                        background: `linear-gradient(90deg, ${tech.badgeColor}88, ${tech.badgeColor})`, 
+                                        borderRadius: 2.5 
+                                      }} />
+                                      <div style={{
+                                        position: 'absolute',
+                                        left: `calc(${tech.pos}% - 4px)`,
+                                        top: -1.5,
+                                        width: 8,
+                                        height: 8,
+                                        borderRadius: '50%',
+                                        background: 'white',
+                                        border: `2px solid ${tech.badgeColor}`,
+                                        boxShadow: '0 1px 3px rgba(0,0,0,0.15)'
+                                      }} />
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 8, color: '#94a3b8', marginTop: 2, fontFamily: 'JetBrains Mono' }}>
+                                      <span>${low52w.toFixed(2)}</span>
+                                      <span>${high52w.toFixed(2)}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : (
+                                <span style={{ fontSize: 10.5, color: '#94a3b8' }}>데이터 분석 대기 중</span>
+                              )}
+                            </td>
+                            <td style={{ padding: '12px 14px', color: '#475569', lineHeight: 1.4, fontSize: 10.5 }}>{h.desc}</td>
+                            <td style={{ padding: '12px 14px', textAlign: 'center' }}>
+                              <Link 
+                                href={`/analysis?ticker=${h.ticker}`}
+                                onClick={() => setSelectedTicker(null)}
+                                style={{
+                                  display: 'inline-block', padding: '4px 9px', fontSize: 10, fontWeight: 700,
+                                  background: 'var(--accent-glow)', color: 'var(--accent)', borderRadius: 4,
+                                  textDecoration: 'none', border: '1px solid var(--border-default)', transition: 'background 0.15s'
+                                }}
+                                onMouseEnter={e => e.currentTarget.style.background = '#e0eafe'}
+                                onMouseLeave={e => e.currentTarget.style.background = 'var(--accent-glow)'}
+                              >
+                                분석 ➔
+                              </Link>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
                   </tbody>
                 </table>
               </div>
