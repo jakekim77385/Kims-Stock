@@ -165,10 +165,11 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'PANW', name: '팔로알토 네트웍스 (Palo Alto Networks)', weight: '사이버 보안', desc: '클라우드 및 네트워크 보안 업계 1위로, AI 기반 차세대 통합 사이버 보안 인프라 플랫폼 표준을 수립해 가는 사이버 방패 대장주' }
   ],
   'IBB': [
-    { ticker: 'REGN', name: 'Regeneron Pharma', weight: '8.2%', desc: '황반변성 치료제 아일리아 개발 및 안과/면역계 바이오텍' },
-    { ticker: 'VRTX', name: 'Vertex Pharma', weight: '7.8%', desc: '낭성섬유증 치료제의 독점적 강자 및 유전자 가위 승인사' },
-    { ticker: 'AMGN', name: 'Amgen Inc.', weight: '6.8%', desc: '글로벌 대형 바이오 의약품의 개척자, 면역 항암 신약 보유' },
-    { ticker: 'GILD', name: 'Gilead Sciences', weight: '5.5%', desc: '에이즈 치료제 독점 및 타미플루 개발, 종양 세포 치료 강자' }
+    { ticker: 'REGN', name: '리제네론 (Regeneron Pharmaceuticals)', weight: '바이오 메이저', desc: '안과 질환 치료제(아일리아) 및 글로벌 최고 수준의 독자적 항체 개발 기술력을 지닌 바이오텍 강자' },
+    { ticker: 'VRTX', name: '버텍스 (Vertex Pharmaceuticals)', weight: '바이오 메이저', desc: '낭성섬유증 유전자 치료제 분야를 100% 독점하고 있는 초고수익 혁신 유전자 바이오텍의 표준' },
+    { ticker: 'AMGN', name: '암젠 (Amgen Inc.)', weight: '바이오 메이저', desc: '바이오 의약품 산업을 개척한 글로벌 1세대 대형 바이오 기업으로 골다공증 및 면역학 강자' },
+    { ticker: 'GILD', name: '길리어드 (Gilead Sciences)', weight: '바이오 메이저', desc: 'HIV(에이즈) 치료제 글로벌 독점 및 코로나 치료제 레데시비르, 항암 면역 세포 치료 강자' },
+    { ticker: 'MRNA', name: '모더나 (Moderna Inc.)', weight: 'mRNA 혁신', desc: '코로나19 백신 개발을 통해 mRNA 플랫폼 기술력을 세계에 입증한 차세대 암 백신 및 면역 신약 개척사' }
   ],
   'XLY': [
     { ticker: 'AMZN', name: 'Amazon.com Inc.', weight: '22.8%', desc: '글로벌 e커머스 1위 및 물류/배송 인프라 지배자' },
@@ -207,10 +208,11 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'FCX', name: 'Freeport-McMoRan', weight: '5.5%', desc: '세계 최대 구리 광산 시추사, 전력 인프라 확장용 구리 수혜 대장' }
   ],
   'XLV': [
-    { ticker: 'LLY', name: 'Eli Lilly & Co.', weight: '10.8%', desc: '비만 치료제(젭바운드) 및 당뇨 치료제 독점으로 시가총액 헬스케어 1위' },
-    { ticker: 'UNH', name: 'UnitedHealth Group', weight: '9.2%', desc: '미국 최대 사설 의료보험 서비스 및 옵텀(Optum) 진료 관리 플랫폼' },
-    { ticker: 'JNJ', name: 'Johnson & Johnson', weight: '8.2%', desc: '제약 및 정밀 수술 의료기기 제조, 매우 견조한 트리플 A 배당 기업' },
-    { ticker: 'MRK', name: 'Merck & Co.', weight: '6.8%', desc: '세계 최고 매출의 면역 항암제 키트루다(Keytruda) 판권 보유 제약사' }
+    { ticker: 'LLY', name: '일라이 릴리 (Eli Lilly & Co.)', weight: '빅파마 1위', desc: '마운자로, 젭바운드 등 게임체인저급 당뇨 및 비만 치료제 독점으로 글로벌 시가총액 1위 제약사' },
+    { ticker: 'UNH', name: '유나이티드헬스 (UnitedHealth Group)', weight: '의료 보험', desc: '미국 최대의 사설 의료보험 플랫폼 및 옵텀(Optum) 고속 디지털 진료 연동 서비스 거인' },
+    { ticker: 'JNJ', name: '존슨앤존슨 (Johnson & Johnson)', weight: '의료/제약', desc: '글로벌 소비재 및 정밀 수술 의료기기 제조, 트리플 A 등급의 가장 신뢰받는 배당 귀족사' },
+    { ticker: 'MRK', name: '머크 (Merck & Co.)', weight: '빅파마', desc: '글로벌 면역 항암제 부동의 1위인 키트루다(Keytruda) 판권을 보유한 최상급 글로벌 제약 거인' },
+    { ticker: 'PFE', name: '화이자 (Pfizer Inc.)', weight: '빅파마', desc: '코로나19 mRNA 백신 및 팍스로비드 치료제 신화를 썼으며, 적극적인 항암 파이프라인 인수로 성장하는 백신/제약 명가' }
   ]
 };
 
