@@ -102,7 +102,8 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'COIN', name: '코인베이스 (Coinbase Global)', weight: '거래소', desc: '미국 최대의 제도권 가상자산 거래 및 위탁 수탁(Custodian) 플랫폼' },
     { ticker: 'CRCL', name: '써클 (Circle Internet Group)', weight: '스테이블', desc: '글로벌 2대 달러화 스테이블코인 USDC 발행사이자 블록체인 결제 인프라 거인' },
     { ticker: 'MSTR', name: '마이크로스트래티지 (MicroStrategy)', weight: '비트코인', desc: '단일 법인 기준 비트코인 실물 최다 보유사 (BTC 장기 레버리지 프록시)' },
-    { ticker: 'IREN', name: '아이렌 (IREN Inc.)', weight: 'AI 데이터센터', desc: '100% 재생 에너지 기반의 차세대 고효율 친환경 비트코인 채굴 및 AI 데이터센터 혁신 기업' }
+    { ticker: 'IREN', name: '아이렌 (IREN Inc.)', weight: 'AI 데이터센터', desc: '100% 재생 에너지 기반의 차세대 고효율 친환경 비트코인 채굴 및 AI 데이터센터 혁신 기업' },
+    { ticker: 'BMNR', name: '비트마인 이머션 (BitMine Immersion Technologies)', weight: '액침 냉각', desc: '차세대 액침 냉각(Immersion Cooling) 솔루션을 도입한 저전력 고효율 비트코인 채굴 인프라 운영 및 호스팅 서비스 대표 기업' }
   ],
   'QTUM': [
     { ticker: 'IONQ', name: '아이온큐 (IonQ Inc.)', weight: '이온 트랩', desc: '이온 트랩 방식 양자컴퓨터 선두주자, 업계 내 유일한 대형 현금 유동성 확보사' },
