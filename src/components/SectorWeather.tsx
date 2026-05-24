@@ -169,7 +169,8 @@ const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
     { ticker: 'VRTX', name: '버텍스 (Vertex Pharmaceuticals)', weight: '바이오 메이저', desc: '낭성섬유증 유전자 치료제 분야를 100% 독점하고 있는 초고수익 혁신 유전자 바이오텍의 표준' },
     { ticker: 'AMGN', name: '암젠 (Amgen Inc.)', weight: '바이오 메이저', desc: '바이오 의약품 산업을 개척한 글로벌 1세대 대형 바이오 기업으로 골다공증 및 면역학 강자' },
     { ticker: 'GILD', name: '길리어드 (Gilead Sciences)', weight: '바이오 메이저', desc: 'HIV(에이즈) 치료제 글로벌 독점 및 코로나 치료제 레데시비르, 항암 면역 세포 치료 강자' },
-    { ticker: 'MRNA', name: '모더나 (Moderna Inc.)', weight: 'mRNA 혁신', desc: '코로나19 백신 개발을 통해 mRNA 플랫폼 기술력을 세계에 입증한 차세대 암 백신 및 면역 신약 개척사' }
+    { ticker: 'MRNA', name: '모더나 (Moderna Inc.)', weight: 'mRNA 혁신', desc: '코로나19 백신 개발을 통해 mRNA 플랫폼 기술력을 세계에 입증한 차세대 암 백신 및 면역 신약 개척사' },
+    { ticker: 'PFE', name: '화이자 (Pfizer Inc.)', weight: '빅파마/백신', desc: '코로나19 mRNA 백신 및 팍스로비드 치료제 신화를 썼으며, 적극적인 항암 파이프라인 인수로 성장하는 백신/제약 명가' }
   ],
   'XLY': [
     { ticker: 'AMZN', name: 'Amazon.com Inc.', weight: '22.8%', desc: '글로벌 e커머스 1위 및 물류/배송 인프라 지배자' },
