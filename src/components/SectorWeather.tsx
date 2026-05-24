@@ -73,10 +73,11 @@ interface HoldingItem {
 
 const SECTOR_HOLDINGS: Record<string, HoldingItem[]> = {
   'GLD': [
-    { ticker: 'NEM', name: 'Newmont Corporation', weight: '대표 광산', desc: '세계 최대 금 채굴 기업, 금 가격에 강하게 수반' },
-    { ticker: 'GOLD', name: 'Barrick Gold', weight: '대표 광산', desc: '글로벌 금 광산 업계 2위, 안정적인 원가 통제력' },
-    { ticker: 'FNV', name: 'Franco-Nevada', weight: '로열티', desc: '광산 지분 투자 및 매출의 일정 비율을 금으로 받는 스트리밍사' },
-    { ticker: 'AEM', name: 'Agnico Eagle Mines', weight: '대표 광산', desc: '캐나다 및 핀란드 위주의 안정적인 금 시추 기업' }
+    { ticker: 'NEM', name: '뉴몬트 (Newmont Corporation)', weight: '대표 광산', desc: '세계 최대의 금 광산 시추 및 채굴 메이저 기업, 실물 금 시세에 직접 수반' },
+    { ticker: 'GOLD', name: '배릭 골드 (Barrick Gold)', weight: '대표 광산', desc: '글로벌 2대 금 광산 기업, 탁월한 운영 효율성과 업계 최저 수준의 생산 원가 통제력 확보' },
+    { ticker: 'FNV', name: '프랑코 네바다 (Franco-Nevada)', weight: '로열티', desc: '실물 광산 개발 리스크 없이 매출의 일정 비율을 금으로 수취하는 세계 최고 수준의 스트리밍/로열티 대표주' },
+    { ticker: 'AEM', name: '아그니코 이글 마인즈 (Agnico Eagle Mines)', weight: '대표 광산', desc: '캐나다, 호주, 핀란드 중심의 안정적 정제 마진과 우수한 배당 흐름을 제공하는 안정성 중심 금광 기업' },
+    { ticker: 'GDXU', name: 'GDXU (MicroSectors Gold Miners 3X Leveraged ETN)', weight: '3배 레버리지', desc: '금광업 대표 ETF(GDX, GDXJ) 일간 수익률을 3배 레버리지로 강력히 추종하는 공격적 단기 트레이딩 도구' }
   ],
   'SLV': [
     { ticker: 'PAAS', name: 'Pan American Silver', weight: '대표 광산', desc: '글로벌 대표 은 시추 기업, 금/아연 복합 채굴' },
