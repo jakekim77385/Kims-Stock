@@ -6,8 +6,8 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   ReferenceLine, Legend
 } from 'recharts';
-import { TrendingUp, TrendingDown, RefreshCw } from 'lucide-react';
-import { stockUniverse, type Stock } from '@/lib/mockData';
+import { TrendingUp, TrendingDown, RefreshCw, Newspaper, AlertTriangle, MessageSquare, Check, Sparkles, AlertCircle, HelpCircle } from 'lucide-react';
+import { stockUniverse, type Stock, news, type NewsItem } from '@/lib/mockData';
 import { useQuote, useHistory, type HistoryBar } from '@/lib/hooks';
 import {
   formatPercent, formatMarketCap, formatVolume,
@@ -397,6 +397,143 @@ function getKimsDiagnostic(
     shortTrend, midTrend, longTrend,
     actionCode, actionTitle, actionDesc,
     actionBadgeColor, actionBadgeBg
+  };
+}
+
+interface HybridStrategyResult {
+  weatherEmoji: string;
+  weatherTitle: string;
+  weatherDesc: string;
+  weatherColor: string;
+  strategyGuidelines: string[];
+}
+
+function getHybridStrategy(
+  actionCode: 'STRONG_BUY' | 'STRONG_SELL' | 'BUY' | 'SELL' | 'HOLD',
+  ticker: string,
+  matchingNewsList: NewsItem[]
+): HybridStrategyResult {
+  const hasNews = matchingNewsList.length > 0;
+  const isPositiveNews = hasNews && matchingNewsList.some(n => n.sentiment === 'positive');
+  const isNegativeNews = hasNews && matchingNewsList.some(n => n.sentiment === 'negative');
+
+  let weatherEmoji = '⚖️';
+  let weatherTitle = '시장 중립 수렴 관망';
+  let weatherDesc = '기술 지표와 최신 속보 뉴스가 수렴하며 뚜렷한 방향성을 설정하지 못한 중립 대기 국면입니다.';
+  let weatherColor = '#64748b';
+  let strategyGuidelines: string[] = [];
+
+  if (actionCode === 'STRONG_BUY' || actionCode === 'BUY') {
+    if (isPositiveNews) {
+      weatherEmoji = '☀️';
+      weatherTitle = '쾌청 - 시너지 폭발 (기술적 정배열 + 모멘텀 호재)';
+      weatherDesc = `기술적으로 단/중/장기 3중 모멘텀이 상방 정배열 상승세(BUY)를 그리며 가속화되는 가운데, 최근 종목 속보 뉴스 역시 호재(긍정 센티먼트)를 강력 지탱하고 있습니다. 차트 에너지와 펀더멘털 재료가 유기적으로 폭발하는 리얼 우상향 국면입니다.`;
+      weatherColor = '#10b981';
+      strategyGuidelines = [
+        `적극적인 비중 확대(Buy & Hold) 전략을 추진하십시오. 현재 추세에 순응하며 랠리를 온전히 향유할 때입니다.`,
+        `주당 FCF 및 실적 성장 모멘텀이 뒷받침되므로, 단기 익절보다는 목표가 상향(기존 대비 10%~15% 상향) 포지셔닝이 유효합니다.`,
+        `52주 최고가 돌파 가능성이 매우 농후합니다. 5일 이평선(단기 지지선) 이탈 전까지 물량을 견고히 홀딩하는 추세 추종 전략을 강권합니다.`,
+        `신규 진입의 경우, 장중 일시적인 숨고르기(눌림목 조정) 분할 진입을 적극 공략하여 평균 단가를 최적화하십시오.`
+      ];
+    } else if (isNegativeNews) {
+      weatherEmoji = '⛅';
+      weatherTitle = '구름 낌 - 역발상 기회 탐색 (기술적 반등 vs 뉴스 악재 소화)';
+      weatherDesc = `스토캐스틱 파동은 매력적인 바닥 침체권 탈출이나 견고한 눌림목 매수(BUY) 타점을 조준하고 있으나, 최근 돌발적인 악재 뉴스(부정 센티먼트)가 겹쳤습니다. 악재 유출로 인한 시장의 단기 오버슈팅(투매)이 진행되는 과도기적 국면입니다.`;
+      weatherColor = '#fb923c';
+      strategyGuidelines = [
+        `악재가 이미 주가에 선반영되었는지 확인하는 '셀 온 뉴스(Sell on News)' 관점의 점진적 분할 진입이 현명합니다.`,
+        `한 번에 큰 비중을 매수하기보다는 평단가를 넓게 벌려 잡는 3~4회 분할 매수로 대응 속도를 늦추십시오.`,
+        `52주 최저가 지지선이나 직전 지지 대역의 하방 지탱 여부를 2~3일간 장중 모니터링하며 진입 단가를 안전하게 통제하십시오.`,
+        `주가의 하락 가속도가 둔화되고 스토캐스틱 단기 에너지(5,3,3)가 ▲로 머리를 돌려세우는 양봉 흐름을 확인 후 진입량을 늘리십시오.`
+      ];
+    } else {
+      weatherEmoji = '🌤️';
+      weatherTitle = '대체로 맑음 - 모멘텀 지속 (기술적 우상향 + 소강 국면)';
+      weatherDesc = `기술적 분석상 3중 주기의 상방 모멘텀이 공고히 작동하고 있으나, 개별 종목에 특이 뉴스는 부재한 소강 상태입니다. 시장 매크로(Fed 의사록 및 지표 등) 흐름에 연동되어 안정적으로 가격 채널을 타는 국면입니다.`;
+      weatherColor = '#3b82f6';
+      strategyGuidelines = [
+        `기존의 기술적 분석 룰에 입각한 안정적 매수 및 우상향 홀딩 포지션을 굳건히 유지하십시오.`,
+        `특별한 개별 돌발 악재가 없으므로 시장 지수(SPY/QQQ)의 단기 숨고르기와 궤를 같이하며 편안하게 수량을 늘려갈 수 있는 대역입니다.`,
+        `PCE 물가 지수 등 주요 매크로 발표 전후의 지수 변동성에 대비하여 일부 리스크 버퍼 현금(10~20%)만을 대기시켜 두십시오.`,
+        `50일 및 200일 이동평균선 상단에서 가격 지지가 매우 양호하므로 정밀한 채널 추세 매매를 권장합니다.`
+      ];
+    }
+  } else if (actionCode === 'STRONG_SELL' || actionCode === 'SELL') {
+    if (isNegativeNews) {
+      weatherEmoji = '⛈️';
+      weatherTitle = '뇌우 - 리스크 폭발 (기술적 역배열 붕괴 + 악재 실현)';
+      weatherDesc = `단/중/장기 스토캐스틱 파동이 하향 역배열(▼)로 완전히 무너지며 대세 조정 또는 채널 붕괴(SELL) 신호를 보내는 가운데, 공식적인 악재 뉴스(부정 센티먼트)가 터져 나왔습니다. 차트 훼손과 펀더멘털 악화가 동시에 하방을 지목하는 '대세 하락 개시' 국면입니다.`;
+      weatherColor = '#ef4444';
+      strategyGuidelines = [
+        `지체 없는 현금 확보 및 포트폴리오 리스크 오프(비중 축소) 전략을 강력히 권고합니다. 추가 손실 차단이 최우선입니다.`,
+        `신규 매수 진입이나 '어설픈 물타기(평단가 낮추기)'는 절대 금물입니다. 떨어지는 칼날을 맨손으로 잡지 마십시오.`,
+        `보유 비중의 최소 30%~50% 이상을 현금화하여 수익을 보존하거나 치명적인 손실률 확대를 원천 방어하십시오.`,
+        `주가가 52주 최저가 지지선을 터치하거나, 단기 에너지 파동이 완전 침체권(25 이하)에서 극단적인 매도 과열을 해소할 때까지 철저한 무매매 방관 스탠스를 고수하십시오.`
+      ];
+    } else if (isPositiveNews) {
+      weatherEmoji = '🌫️';
+      weatherTitle = '안개 - 속임수 경계 (호재 뉴스를 활용한 익절 및 탈출)';
+      weatherDesc = `개별적인 호재성 속보 뉴스가 유입되어 투심을 자극하고 있으나, 단/중/장기 차트 에너지는 이미 다중 천정권(75 이상)을 형성하고 아래로 급격히 꺾이며 대세 이탈(SELL) 신호를 발하고 있습니다. '호재 재료로 인한 일시적 장중 가격 펌핑'이 나타나는 속임수 국면입니다.`;
+      weatherColor = '#8b5cf6';
+      strategyGuidelines = [
+        `이 시점의 장중 급등은 신규 추격 매수 타점이 절대 아니며, **'보유 물량을 가장 높은 가격에 넘겨주고 탈출할 수 있는 절호의 비중 축소/현금화 기회'**로 간주해야 합니다.`,
+        `개별 호재 뉴스의 일시적 거품이 꺼지면 기술적 차트 이탈에 가속도가 붙으며 급격히 차익 매물이 쏟아질 수 있음에 극도로 경계하십시오.`,
+        `매도 손절선 및 보수적인 배당 분할 매도(Take Profit) 계획을 한층 타이트하게 당겨 잡아 리스크 오프를 준비하십시오.`,
+        `탐욕을 버리고 차가운 머리로 이익을 확정 짓는 방어적 계좌 통제가 금일 성공 투자의 열쇠입니다.`
+      ];
+    } else {
+      weatherEmoji = '🌧️';
+      weatherTitle = '비 - 하락 흐름 가속 (기술적 하향 역배열 + 지지 부재)';
+      weatherDesc = `기술적 분석상 단/중/장기 에너지가 일제히 아래로 꽂히는 하락 트랙에 진입한 대피 경보 상태이며, 개별 재료는 소강 상태입니다. 전반적인 매크로 하방 압력이 유입되며 지지선을 이탈하는 국면입니다.`;
+      weatherColor = '#dc2626';
+      strategyGuidelines = [
+        `낙폭이 추가로 확대될 가능성이 농후하므로 선제적인 리스크 관리를 수행하십시오.`,
+        `박스권 하단 및 200일 이평선(장기 지지선) 수준까지 변동성이 아래로 크게 열려 있으므로, 조기 진입을 극도로 보류해야 합니다.`,
+        `보유 비중의 일부를 덜어내어 현금 보유 비중을 40% 이상으로 유지하는 안전 방어 전략을 추천합니다.`,
+        `단기 기술적 반등(데드캣 바운드)이 오더라도 매도하지 못해 물린 물량을 가볍게 털어내는 출구 전략으로만 활용하십시오.`
+      ];
+    }
+  } else {
+    // actionCode === 'HOLD'
+    if (isPositiveNews) {
+      weatherEmoji = '⛅';
+      weatherTitle = '개이는 중 - 돌파 임계점 대기 (호재 뉴스 발생 + 기술적 수렴)';
+      weatherDesc = `매우 긍정적인 속보 뉴스(긍정 센티먼트)가 보도되어 상승 에너지를 불어넣고 있으나, 단/중/장기 기술적 보조지표는 여전히 박스권 횡보 수렴 상태에 갇혀 명확한 상방 돌파를 타진하는 대기 국면입니다.`;
+      weatherColor = '#06b6d4';
+      strategyGuidelines = [
+        `호재가 실질적인 '기술적 상단 돌파(20일/50일 이평선 거래량 동반 돌파)'로 확인될 때까지 섣부른 조기 진입보다는 관망 대기가 유리합니다.`,
+        `관심 종목 리스트 상단에 등록해 두고, 전고점 돌파 또는 박스권 상단 터치 시 강력한 추세 확인 매수(Breakout Buy)로 진입할 준비를 하십시오.`,
+        `상승 돌파 성공 시 빠른 시일 내에 3중 모멘텀이 정배열 상승(BUY)으로 전환되어 시그니처 시그널을 출력할 확률이 매우 높습니다.`
+      ];
+    } else if (isNegativeNews) {
+      weatherEmoji = '☁️';
+      weatherTitle = '흐림 - 바닥 재확인 단계 (단기 악재 출회 + 기술적 관망)';
+      weatherDesc = `단기적인 악재 뉴스(부정 센티먼트)가 부각되며 하방 리스크가 누적되는 가운데, 기술적 에너지도 특별한 매수 시그널을 주지 못한 채 중단 박스권에서 관망(HOLD) 신호를 유지 중인 국면입니다.`;
+      weatherColor = '#78716c';
+      strategyGuidelines = [
+        `무모하게 저점을 잡으려는 섣부른 탐색 매수를 완전히 멈추고 현금 수급력을 비축한 채 대기하십시오.`,
+        `단기 악재 소화 과정에서 박스권 하단 지지선(52주 최저점 등)까지 추가 밀림 현상이 발생할 수 있는지 장중 하방 경직성을 체크하는 것이 선행 과제입니다.`,
+        `주가가 악재 속에서도 하락을 멈추고 견고하게 쌍바닥을 잡거나, 스토캐스틱 장기 주기(20일)가 침체 끝자락에서 우상향 턴을 개시할 때 비로소 진입 타점이 마련됩니다.`
+      ];
+    } else {
+      weatherEmoji = '⚖️';
+      weatherTitle = '구름 조금 - 평온한 횡보 (중기 균형 및 재료 소강)';
+      weatherDesc = `뚜렷한 개별 뉴스나 이벤트가 없는 상황에서, 주가와 단·중·장기 지표 모두 삼각 수렴의 막바지 정중앙 부근에서 팽팽한 균형을 보이고 있는 평온한 중립 횡보 국면입니다.`;
+      weatherColor = '#6b7280';
+      strategyGuidelines = [
+        `잦은 매매를 줄이고 포트폴리오 비중을 현행 유지(HOLD)한 채 고요하게 관망하는 스탠스가 최적입니다.`,
+        `지표 수렴 막바지 단계이므로, 수일 내에 상방 또는 하방으로 강력한 변동성 방향(추세 분출)이 터져 나올 임계점에 근접했습니다.`,
+        `가장 강력한 수급 폭발 시점에 대비하여 매매 룰에 입각한 상/하단 가격 타점 경보(Alert)만을 설정해 두고 에너지를 충전하십시오.`
+      ];
+    }
+  }
+
+  return {
+    weatherEmoji,
+    weatherTitle,
+    weatherDesc,
+    weatherColor,
+    strategyGuidelines
   };
 }
 
@@ -959,6 +1096,12 @@ function AnalysisContent() {
             const prevData = stochasticData[stochasticData.length - 2] || lastData;
             const diag = getKimsDiagnostic(lastData, prevData);
             
+            const tickerUpper = tickerParam.toUpperCase();
+            const matchingNews = news.filter(n => n.ticker === tickerUpper);
+            const fallbackNews = matchingNews.length > 0 ? matchingNews : news.filter(n => n.ticker === 'SPX');
+            
+            const hybridStrategy = getHybridStrategy(diag.actionCode, tickerUpper, matchingNews);
+            
             return (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 20 }}>
@@ -1181,6 +1324,187 @@ function AnalysisContent() {
                     <p style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.6, marginTop: 6, marginBottom: 0 }}>
                       {diag.actionDesc}
                     </p>
+                  </div>
+                </div>
+
+                {/* D. 관련 뉴스 속보 및 실시간 센티먼트 */}
+                <div className="card" style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 10 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <Newspaper size={16} color="var(--accent)" />
+                      <h3 style={{ fontSize: 14, fontWeight: 900, color: 'var(--text-primary)', margin: 0 }}>
+                        📰 실시간 관련 뉴스 속보 & 센티먼트
+                      </h3>
+                    </div>
+                    {matchingNews.length === 0 && (
+                      <span style={{ fontSize: 9.5, color: '#f59e0b', background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
+                        💡 시장 매크로 속보 연동 중
+                      </span>
+                    )}
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 12 }}>
+                    {fallbackNews.map((n) => {
+                      const isPositive = n.sentiment === 'positive';
+                      const badgeColor = isPositive ? '#10b981' : '#ef4444';
+                      const badgeBg = isPositive ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)';
+                      
+                      return (
+                        <div key={n.id} style={{
+                          padding: '12px 16px',
+                          background: 'var(--bg-elevated)',
+                          border: '1px solid var(--border-default)',
+                          borderLeft: `3px solid ${badgeColor}`,
+                          borderRadius: 8,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 8,
+                          transition: 'all 0.2s ease',
+                          cursor: 'pointer'
+                        }}
+                        onMouseEnter={e => {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.04)';
+                          e.currentTarget.style.borderColor = badgeColor;
+                        }}
+                        onMouseLeave={e => {
+                          e.currentTarget.style.transform = 'none';
+                          e.currentTarget.style.boxShadow = 'none';
+                          e.currentTarget.style.borderColor = 'var(--border-default)';
+                        }}
+                        >
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', gap: 5 }}>
+                              <span style={{ fontSize: 8.5, fontWeight: 900, color: badgeColor, background: badgeBg, padding: '1px 5px', borderRadius: 3, border: `1px solid ${badgeColor}33` }}>
+                                {isPositive ? '🔥 긍정' : '🚨 부정'}
+                              </span>
+                              <span style={{ fontSize: 8.5, fontWeight: 700, color: 'var(--text-muted)', background: 'var(--bg-elevated)', padding: '1px 5px', borderRadius: 3, border: '1px solid var(--border-default)' }}>
+                                {n.category}
+                              </span>
+                            </div>
+                            <span style={{ fontSize: 9.5, color: 'var(--text-muted)' }}>{n.time}</span>
+                          </div>
+
+                          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.4 }}>
+                            {n.headline}
+                          </div>
+
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4, fontSize: 9.5, color: 'var(--text-muted)' }}>
+                            <span>출처: {n.source}</span>
+                            <span style={{ fontWeight: 800, color: n.impact === 'high' ? '#ef4444' : '#6b7280' }}>
+                              영향도: {n.impact === 'high' ? 'High' : n.impact === 'medium' ? 'Medium' : 'Low'}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* E. 금일의 하이브리드 투자 전략 */}
+                <div className="card" style={{
+                  padding: '24px 28px',
+                  borderRadius: 12,
+                  background: `linear-gradient(135deg, white, ${hybridStrategy.weatherColor}03)`,
+                  border: `1.5px solid ${hybridStrategy.weatherColor}44`,
+                  boxShadow: `0 8px 30px ${hybridStrategy.weatherColor}08`,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 20,
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}>
+                  {/* Decorative Background Glow */}
+                  <div style={{
+                    position: 'absolute',
+                    top: -40,
+                    right: -40,
+                    width: 150,
+                    height: 150,
+                    borderRadius: '50%',
+                    background: hybridStrategy.weatherColor,
+                    opacity: 0.04,
+                    filter: 'blur(40px)',
+                    pointerEvents: 'none'
+                  }} />
+
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 14 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <Sparkles size={16} color={hybridStrategy.weatherColor} />
+                      <h3 style={{ fontSize: 14.5, fontWeight: 900, color: 'var(--text-primary)', margin: 0 }}>
+                        🎯 킴스주식 x DH 인텔리전스 금일의 하이브리드 투자 전략
+                      </h3>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{
+                        fontSize: 9,
+                        fontWeight: 900,
+                        color: 'white',
+                        background: 'linear-gradient(90deg, #1e1b4b, #312e81)',
+                        padding: '3px 8px',
+                        borderRadius: 20,
+                        boxShadow: '0 2px 6px rgba(30,27,75,0.2)'
+                      }}>
+                        HYBRID ENGINE v1.2
+                      </span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 24, alignItems: 'stretch' }}>
+                    {/* Left Panel: Weather report */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, borderRight: '1px solid var(--border-subtle)', paddingRight: 24 }}>
+                      <div>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 8, letterSpacing: '0.5px' }}>
+                          금일 종합 투자 기상 특보
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <span style={{ fontSize: 32, filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))' }}>{hybridStrategy.weatherEmoji}</span>
+                          <div>
+                            <div style={{ fontSize: 15, fontWeight: 900, color: hybridStrategy.weatherColor }}>
+                              {hybridStrategy.weatherTitle}
+                            </div>
+                            <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2, fontWeight: 600 }}>
+                              기술 모멘텀 시그널 및 실시간 뉴스 센티먼트 교차 연산 결과
+                            </div>
+                          </div>
+                        </div>
+                        <p style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.7, marginTop: 12, marginBottom: 0, textAlign: 'justify' }}>
+                          {hybridStrategy.weatherDesc}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Right Panel: Strategy Guidelines */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                      <div>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 10, letterSpacing: '0.5px' }}>
+                          금일 포지셔닝 및 대응 가이드라인
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                          {hybridStrategy.strategyGuidelines.map((guide, idx) => (
+                            <div key={idx} style={{ display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 11.5, lineHeight: 1.6 }}>
+                              <span style={{
+                                flexShrink: 0,
+                                width: 15,
+                                height: 15,
+                                borderRadius: '50%',
+                                background: `${hybridStrategy.weatherColor}15`,
+                                color: hybridStrategy.weatherColor,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: 9,
+                                fontWeight: 800,
+                                marginTop: 2
+                              }}>
+                                {idx + 1}
+                              </span>
+                              <span style={{ color: 'var(--text-primary)' }}>{guide}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 

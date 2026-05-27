@@ -731,3 +731,26 @@ export const defaultPortfolio: PortfolioPosition[] = [
   { id: '4', ticker: 'JPM', name: 'JPMorgan', shares: 25, avgCost: 175.00, currentPrice: 306.38, sector: 'Financials', purchaseDate: '2024-01-20' },
   { id: '5', ticker: 'ABBV', name: 'AbbVie', shares: 30, avgCost: 155.00, currentPrice: 215.70, sector: 'Healthcare', purchaseDate: '2024-04-05' },
 ];
+
+export interface NewsItem {
+  id: number;
+  headline: string;
+  source: string;
+  time: string;
+  sentiment: 'positive' | 'negative' | 'neutral';
+  category: string;
+  ticker: string;
+  impact: 'high' | 'medium' | 'low';
+}
+
+export const news: NewsItem[] = [
+  { id: 1, headline: 'Fed 의장 파월, 인플레이션 둔화 확인시 금리 인하 가능 시사', source: 'Reuters', time: '2시간 전', sentiment: 'positive', category: '매크로', ticker: 'SPX', impact: 'high' },
+  { id: 2, headline: 'NVIDIA, 2분기 어닝 가이던스 대폭 상향… AI 수요 강세 지속', source: 'Bloomberg', time: '4시간 전', sentiment: 'positive', category: 'Tech', ticker: 'NVDA', impact: 'high' },
+  { id: 3, headline: 'Apple, 인도 제조 비중 확대 — 중국 의존도 감소 전략 가속', source: 'WSJ', time: '6시간 전', sentiment: 'positive', category: 'Tech', ticker: 'AAPL', impact: 'medium' },
+  { id: 4, headline: 'UnitedHealth, 보험금 청구 급증으로 연간 실적 전망 하향', source: 'CNBC', time: '8시간 전', sentiment: 'negative', category: 'Healthcare', ticker: 'UNH', impact: 'high' },
+  { id: 5, headline: 'Meta, AI 광고 플랫폼 효과로 광고 수익 29% 급증', source: 'FT', time: '10시간 전', sentiment: 'positive', category: 'Communication', ticker: 'META', impact: 'medium' },
+  { id: 6, headline: '미국 소비자신뢰지수 예상치 상회 — 경기 연착륙 기대 강화', source: 'AP', time: '12시간 전', sentiment: 'positive', category: '매크로', ticker: 'SPX', impact: 'medium' },
+  { id: 7, headline: 'JPMorgan, 하반기 금리 하락 수혜 섹터로 금융주·리츠 추천', source: 'JPMorgan Research', time: '14시간 전', sentiment: 'positive', category: 'Financials', ticker: 'JPM', impact: 'low' },
+  { id: 8, headline: 'Tesla, 2분기 차량 인도 예상치 하회 — 수요 둔화 우려 재점화', source: 'Reuters', time: '1일 전', sentiment: 'negative', category: 'EV', ticker: 'TSLA', impact: 'high' },
+];
+
