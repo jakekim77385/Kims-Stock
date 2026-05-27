@@ -64,6 +64,16 @@ export default function KimsTodayRecommendation() {
         score -= 200; // 초강력 감점으로 추천 랭크에서 강제 배제
       }
 
+      // 5. 이동평균선 역배열(하락) 및 횡보 소강(HOLD) 방지 필터 (상세 분석의 HOLD/관망 시그널과 정합성 유지)
+      // 주가가 50일선이나 200일선 아래에 위치한 역배열 하락세 종목이거나, 모멘텀 점수가 65점 미만인 횡보/소강 종목은 
+      // 상세 페이지에서 HOLD(관망/현행유지) 의견이 도출되므로 매수 추천에서 원천 배제합니다!
+      if (s.price < s.ma50 || s.price < s.ma200) {
+        score -= 200; // 하락세 종목 배제
+      }
+      if (s.momentumScore < 65) {
+        score -= 200; // 횡보/소강 종목 배제
+      }
+
       // ─── B. 뉴스 감성 및 수급 촉매 점수 (News & Catalyst - 25%) ───
       const stockNews = news.filter((n) => n.ticker === s.ticker);
       const positiveNews = stockNews.filter((n) => n.sentiment === 'positive');
