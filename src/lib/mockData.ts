@@ -165,7 +165,7 @@ export const macroEvents: MacroEvent[] = [
     impactCommentary: 'AI 수요의 지속 가능성을 가늠할 수 있는 핵심 지표로, 결과에 따라 기술주 전반 및 나스닥 지수에 막대한 영향을 미칩니다.'
   },
   {
-    date: '2026-05-27',
+    date: '2026-05-25',
     event: '메모리얼 데이 (미국 증시 휴장)',
     actual: null,
     forecast: '-',
