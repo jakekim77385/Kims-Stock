@@ -197,7 +197,8 @@ export async function fetchQuote(ticker: string, includeFundamentals = false): P
           if (fd?.operatingCashflow && fd?.totalDebt) {
             result.interestCoverage = fd.totalDebt > 0 ? (fd.operatingCashflow / (fd.totalDebt * 0.05)) : 10;
           } else {
-            result.interestCoverage = result.debtToEquity > 0 ? Math.max(1, 150 / result.debtToEquity) : 10;
+            const d2e = result.debtToEquity ?? 0;
+            result.interestCoverage = d2e > 0 ? Math.max(1, 150 / d2e) : 10;
           }
 
           // FCF Yield 계산
@@ -1198,11 +1199,11 @@ export function translateHeadline(title: string): string {
       const personKo = translatePhrase(person);
       
       // Clean split using comma and/or "and"
-      const soldStocksKo = soldStocks
+      const soldStocksKo = (soldStocks as string)
         .split(/,\s*(?:and\s+)?|\s+and\s+/)
-        .map(s => s.trim())
+        .map((s: string) => s.trim())
         .filter(Boolean)
-        .map(s => translatePhrase(s))
+        .map((s: string) => translatePhrase(s))
         .join('·');
       
       return `${personKo}, 최근 ${soldStocksKo} 매도하고 ${year ? year + '년 ' : ''}IPO 이후 ${pct}% 폭락한 주식 매수`;
