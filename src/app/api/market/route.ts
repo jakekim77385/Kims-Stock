@@ -14,7 +14,7 @@ export async function GET() {
     }
 
     // 실시간 마켓 주요 뉴스 & 국문 요약 패칭
-    let newsSummary = { news: [], summary: '', keyIssues: [] };
+    let newsSummary: any = { news: [], summary: '', keyIssues: [] };
     try {
       newsSummary = await fetchMarketNewsAndSummary(indices);
     } catch (err) {
