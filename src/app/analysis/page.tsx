@@ -11,7 +11,7 @@ import { stockUniverse, type Stock, news, type NewsItem } from '@/lib/mockData';
 import { useQuote, useHistory, type HistoryBar } from '@/lib/hooks';
 import {
   formatPercent, formatMarketCap, formatVolume,
-  getRSISignal, calcDCF
+  getRSISignal, calcDCF, resolveTicker
 } from '@/lib/utils';
 
 interface ScenarioResult {
@@ -1888,7 +1888,9 @@ function AnalysisContentWrapper() {
     }
   }
 
-  const upperTicker = ticker.toUpperCase();
+  // Resolve Korean name or lowercase name to exact ticker
+  const resolved = resolveTicker(ticker);
+  const upperTicker = resolved.toUpperCase();
 
   // Force synchronous unmount and clean remount of AnalysisContent on key change
   return <AnalysisContent key={upperTicker} tickerParam={upperTicker} />;

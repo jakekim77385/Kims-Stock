@@ -5,6 +5,7 @@ import {
   AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, 
   HelpCircle, RefreshCw, BarChart2, Zap, ArrowRight, ShieldAlert 
 } from 'lucide-react';
+import { resolveTicker } from '@/lib/utils';
 
 interface TrapStock {
   ticker: string;
@@ -275,7 +276,7 @@ export default function PremarketTrapDetector() {
   // ─── 관심 티커 실시간 추가 및 퀀트 융합 연산 실행 ─────────────────────────────────────
   const handleSearchAndAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    const query = searchQuery.trim().toUpperCase();
+    const query = resolveTicker(searchQuery).trim().toUpperCase();
     if (!query) return;
 
     if (stocks.some(s => s.ticker === query)) {
