@@ -1,5 +1,5 @@
 'use client';
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
   AreaChart, Area, BarChart, Bar, LineChart, Line,
@@ -1838,7 +1838,26 @@ function AnalysisContent({ tickerParam }: { tickerParam: string }) {
 
 function AnalysisContentWrapper() {
   const params = useSearchParams();
-  const tickerParam = params.get('ticker') || 'MSFT';
+  const [tickerParam, setTickerParam] = useState<string>('MSFT');
+
+  useEffect(() => {
+    // 1. Next.js useSearchParams lookup
+    const nextTicker = params.get('ticker');
+    if (nextTicker) {
+      setTickerParam(nextTicker.toUpperCase());
+      return;
+    }
+
+    // 2. Direct browser URL parsing to bypass Next.js client router cache freeze
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const windowTicker = urlParams.get('ticker');
+      if (windowTicker) {
+        setTickerParam(windowTicker.toUpperCase());
+      }
+    }
+  }, [params]);
+
   return <AnalysisContent key={tickerParam} tickerParam={tickerParam} />;
 }
 
