@@ -551,7 +551,7 @@ export const stockUniverse: Stock[] = [
     dividendYield: 0.00, dividendGrowth5y: 0.0, payoutRatio: 0.0,
     cEpsGrowthQtr: 94.0, aEpsGrowth3y: 32.4, nNewHigh: false, sVolumeSurge: 0.87, iInstitOwnership: 63.4,
     earningsYield: 2.8, returnOnCapital: 16.8, magicFormulaRank: 55,
-    qualityScore: 80, valueScore: 52, momentumScore: 68, growthScore: 88, overallScore: 75,
+    qualityScore: 80, valueScore: 52, momentumScore: 60, growthScore: 88, overallScore: 75,
   },
   {
     ticker: 'TSLA', name: 'Tesla Inc.', sector: 'Consumer Disc.', industry: 'Electric Vehicles',
