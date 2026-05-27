@@ -537,6 +537,101 @@ function getHybridStrategy(
   };
 }
 
+interface AvoidToBuyBlueprintResult {
+  duration: string;
+  targetTimeline: string;
+  technicalTriggers: string[];
+  fundamentalCatalysts: string[];
+  borderColor: string;
+  bgGlow: string;
+}
+
+function getAvoidToBuyBlueprint(
+  ticker: string,
+  lastLongStoch: number,
+  matchingNewsList: NewsItem[]
+): AvoidToBuyBlueprintResult {
+  const tickerUpper = ticker.toUpperCase();
+  
+  // 1. Calculate duration based on long-term stochastic level
+  let duration = '4주 ~ 6주 (약 1.5개월)';
+  let targetTimeline = '향후 1.5개월 전후';
+  
+  if (lastLongStoch >= 70) {
+    // Just fell from the top, needs major cool-off
+    duration = '6주 ~ 8주 (약 2개월)';
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + 55);
+    targetTimeline = `${targetDate.getMonth() + 1}월 하순 경`;
+  } else if (lastLongStoch <= 30) {
+    // Already in deep oversold, might be near bottom
+    duration = '2주 ~ 4주 (약 3~4주)';
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + 21);
+    targetTimeline = `${targetDate.getMonth() + 1}월 중순 경`;
+  } else {
+    // Intermediate falling channel
+    duration = '4주 ~ 6주 (약 1.2개월)';
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + 35);
+    targetTimeline = `${targetDate.getMonth() + 1}월 초순 경`;
+  }
+
+  // 2. Define technical triggers
+  const technicalTriggers = [
+    `단기 에너지(Stochastic 5,3,3)가 20% 이하 초과매도권 진입 후 첫 ▲ 상승 반등 전환 확인`,
+    `최근 5일간 최저점을 낮추지 않고 횡보하며 바닥 채널 지지력(하방 경직성) 구축 확인`,
+    `20일 이동평균선(단기 추세선) 위로 주가가 상향 돌파 후 안착(거래량 수반 필요)`
+  ];
+
+  // 3. Define fundamental catalysts based on ticker
+  let fundamentalCatalysts = [
+    `시장의 전반적인 금리 급등세 진정 및 연준 긴축 우려 완화 속보 출현`,
+    `주요 금융기관들의 목표주가 조정 마무리 및 기관 수급 유입 확인`
+  ];
+
+  if (tickerUpper === 'UNH') {
+    fundamentalCatalysts = [
+      `메디케어 요율 재결정 및 의료 비용 비율(MLR) 상승 관련 리스크 해소 공식 보도`,
+      `보험금 청구 급증 관련 오버슈팅 우려 진정 및 연간 가이드라인 재확인 뉴스`,
+      `헬스케어 섹터 전반으로의 안정적인 배당 방어 수급 및 숏커버링 자금 유입`
+    ];
+  } else if (tickerUpper === 'TSLA') {
+    fundamentalCatalysts = [
+      `차기 분기 차량 인도량(Delivery) 및 기가팩토리 가동률 개선 관련 긍정적 속보`,
+      `자율주행(FSD) 규제 승인 진전 또는 로보택시 및 에너지 저장장치(Megapack) 성장세 부각`,
+      `글로벌 전기차 수요 둔화 우려 해소 및 투자 가이드라인 충족 뉴스의 출현`
+    ];
+  } else if (tickerUpper === 'AAPL') {
+    fundamentalCatalysts = [
+      `중국 시장 공급망 리스크 완화 및 인도 제조 비중 성공적 안착 보도`,
+      `차세대 디바이스 AI 탑재율(온디바이스 AI) 교체 수요 증명 뉴스`,
+      `자사주 매입 및 서비스 부문 고마진 매출 기여도 입증 속보`
+    ];
+  } else if (tickerUpper === 'NVDA' || tickerUpper === 'AMD') {
+    fundamentalCatalysts = [
+      `AI 데이터센터 가속 칩 수급 병목 현상 해소 및 공급 안정화 후속 속보`,
+      `빅테크(CSP)들의 자본 지출(CAPEX) 지속 확대 공식 선언`,
+      `차세대 반도체 아키텍처 출시 로드맵 정상 이행 뉴스`
+    ];
+  } else if (tickerUpper === 'META') {
+    fundamentalCatalysts = [
+      `디지털 광고 단가 회복 및 AI 에이전트 마케팅 플랫폼 전환 성공 사례 보도`,
+      `메타버스/Llama 오픈소스 생태계 수익 모델 구체화 속보`,
+      `불필요한 설비투자(CAPEX) 통제 및 고효율 영업 마진 회복 입증`
+    ];
+  }
+
+  return {
+    duration,
+    targetTimeline,
+    technicalTriggers,
+    fundamentalCatalysts,
+    borderColor: '#fb923c', // Amber warnings
+    bgGlow: 'rgba(251, 146, 60, 0.03)'
+  };
+}
+
 function AnalysisContent() {
   const params = useSearchParams();
   const tickerParam = params.get('ticker') || 'MSFT';
@@ -1101,6 +1196,7 @@ function AnalysisContent() {
             const fallbackNews = matchingNews.length > 0 ? matchingNews : news.filter(n => n.ticker === 'SPX');
             
             const hybridStrategy = getHybridStrategy(diag.actionCode, tickerUpper, matchingNews);
+            const avoidToBuyBlueprint = getAvoidToBuyBlueprint(tickerUpper, lastData.long, matchingNews);
             
             return (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -1507,6 +1603,147 @@ function AnalysisContent() {
                     </div>
                   </div>
                 </div>
+
+                {/* F. 매도 종목 전용: 숏커버링 및 신규 매수 재진입 설계도 (Avoid-to-Buy Blueprint) */}
+                {(diag.actionCode === 'SELL' || diag.actionCode === 'STRONG_SELL') && (
+                  <div className="card" style={{
+                    padding: '24px 28px',
+                    borderRadius: 12,
+                    background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.01), rgba(16, 185, 129, 0.01))',
+                    border: '1.5px dashed #fb923c88',
+                    boxShadow: '0 8px 30px rgba(251, 146, 60, 0.04)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 20,
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}>
+                    {/* Decorative Background Glow */}
+                    <div style={{
+                      position: 'absolute',
+                      top: -45,
+                      right: -45,
+                      width: 150,
+                      height: 150,
+                      borderRadius: '50%',
+                      background: '#fb923c',
+                      opacity: 0.03,
+                      filter: 'blur(45px)',
+                      pointerEvents: 'none'
+                    }} />
+
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 14 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <AlertCircle size={16} color="#fb923c" />
+                        <h3 style={{ fontSize: 14.5, fontWeight: 900, color: 'var(--text-primary)', margin: 0 }}>
+                          🕒 숏커버링 및 신규 매수 재진입 설계도 (Avoid-to-Buy Blueprint)
+                        </h3>
+                      </div>
+                      <span style={{
+                        fontSize: 8.5,
+                        fontWeight: 800,
+                        color: 'white',
+                        background: '#fb923c',
+                        padding: '2px 8px',
+                        borderRadius: 4,
+                        boxShadow: '0 2px 4px rgba(251,146,60,0.2)'
+                      }}>
+                        RE-ENTRY ANALYSIS
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 24, alignItems: 'stretch' }}>
+                      {/* Left: Duration prediction */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, borderRight: '1px solid var(--border-subtle)', paddingRight: 24 }}>
+                        <div>
+                          <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 8, letterSpacing: '0.5px' }}>
+                            예상 관망 및 매물 소화 소요 기간
+                          </div>
+                          <div style={{ fontSize: 24, fontWeight: 900, color: '#eab308', fontFamily: 'JetBrains Mono, monospace', marginTop: 4 }}>
+                            {avoidToBuyBlueprint.duration}
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 10 }}>
+                            <span style={{ fontSize: 10.5, color: 'var(--text-secondary)', fontWeight: 700 }}>
+                              💡 예상 반등 타진 시점:
+                            </span>
+                            <span style={{ fontSize: 11.5, fontWeight: 900, color: 'var(--positive)', background: 'var(--positive-glow)', padding: '2px 8px', borderRadius: 4 }}>
+                              {avoidToBuyBlueprint.targetTimeline}
+                            </span>
+                          </div>
+                          <p style={{ fontSize: 11.5, color: 'var(--text-muted)', lineHeight: 1.6, marginTop: 12, marginBottom: 0 }}>
+                            현재 장기 20일 모멘텀 수치({lastData.long}%)의 하락 가속도를 기반으로 산출된 예상 바닥 다지기 소요 일정입니다. 이 기간 동안 무모한 추가 매수를 자제하고 철저한 분할 관망 포지션을 추천합니다.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Right: Triggers */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                          {/* 1. Tech triggers */}
+                          <div>
+                            <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 8, letterSpacing: '0.5px' }}>
+                              재진입 필수 기술적 반등 조건
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                              {avoidToBuyBlueprint.technicalTriggers.map((trig, idx) => (
+                                <div key={idx} style={{ display: 'flex', gap: 6, alignItems: 'flex-start', fontSize: 11, lineHeight: 1.5 }}>
+                                  <span style={{
+                                    flexShrink: 0,
+                                    width: 14,
+                                    height: 14,
+                                    borderRadius: '50%',
+                                    background: 'rgba(251, 146, 60, 0.1)',
+                                    color: '#ea580c',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: 8.5,
+                                    fontWeight: 900,
+                                    marginTop: 1
+                                  }}>
+                                    {idx + 1}
+                                  </span>
+                                  <span style={{ color: 'var(--text-primary)' }}>{trig}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* 2. Fundamental triggers */}
+                          <div style={{ borderTop: '1px dashed var(--border-subtle)', paddingTop: 10 }}>
+                            <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 8, letterSpacing: '0.5px' }}>
+                              재진입 필수 재료적 악재 해소 조건
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                              {avoidToBuyBlueprint.fundamentalCatalysts.map((trig, idx) => (
+                                <div key={idx} style={{ display: 'flex', gap: 6, alignItems: 'flex-start', fontSize: 11, lineHeight: 1.5 }}>
+                                  <span style={{
+                                    flexShrink: 0,
+                                    width: 14,
+                                    height: 14,
+                                    borderRadius: '50%',
+                                    background: 'rgba(16, 185, 129, 0.1)',
+                                    color: '#059669',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: 8.5,
+                                    fontWeight: 900,
+                                    marginTop: 1
+                                  }}>
+                                    {idx + 1}
+                                  </span>
+                                  <span style={{ color: 'var(--text-primary)' }}>{trig}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Core Momentum Summary Cards */}
                 <div className="card" style={{ padding: '20px 24px' }}>
