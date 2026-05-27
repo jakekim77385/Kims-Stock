@@ -309,16 +309,53 @@ function getKimsDiagnostic(
   }
 
   // 4. Combined Action recommendation
-  let title = '⚖️ 시장 중립 (추세 대기 국면)';
-  let desc = '단기, 중기, 장기 에너지가 서로 혼조세를 보이며 뚜렷한 방향성을 결정하지 않은 중립 국면입니다. 박스권 내부 등락을 보이며 다음 추세 발산을 준비 중입니다.';
-  let badgeColor = '#64748b';
-  let badgeBg = 'rgba(100, 116, 139, 0.08)';
+  let title = '';
+  let desc = '';
+  let badgeColor = '';
+  let badgeBg = '';
 
   let actionCode: 'STRONG_BUY' | 'STRONG_SELL' | 'BUY' | 'SELL' | 'HOLD' = 'HOLD';
-  let actionTitle = '⚖️ 시장 관망 및 분할 매매 유효 (Neutral)';
-  let actionDesc = '단기, 중기, 장기 에너지가 서로 다른 방향으로 분산되어 움직이고 있어 강한 단방향 모멘텀이 부재합니다. 공격적인 추가 매수는 지양하며, 보유 비중을 유지한 채 명확한 상단 저항선 돌파 혹은 하단 지지선 안착을 확인한 후 진입하는 것이 유리합니다.';
-  let actionBadgeColor = '#64748b';
-  let actionBadgeBg = 'rgba(100, 116, 139, 0.08)';
+  let actionTitle = '';
+  let actionDesc = '';
+  let actionBadgeColor = '';
+  let actionBadgeBg = '';
+
+  // Dynamic consolidation sub-cases based on Kims Investment Engine
+  if (curr.long <= 35) {
+    title = '⚡ 바닥권 에너지 매집 (장기 매집 구간)';
+    desc = '장기 대세 지표가 바닥권(35 이하)에서 횡보하며 힘을 모으고 있는 매집 국면입니다. 당장 급등할 가능성은 낮으나, 장기적인 하방 지지가 확고하므로 지루함을 견디며 현재 박스권 하단에서 분할 매수(DCA)를 개시하기에 우호적인 대역입니다.';
+    badgeColor = '#0d9488';
+    badgeBg = 'rgba(13, 148, 136, 0.08)';
+
+    actionCode = 'HOLD';
+    actionTitle = '⚖️ 장기 바닥 매집 유효 (DCA 적합)';
+    actionDesc = '대세 장기 에너지가 바닥권에서 수렴 중입니다. 단기 변동성은 제한적이며 지루한 횡보가 지속될 수 있으나, 중장기적 관점의 저점 매집(DCA)을 원하신다면 현재 가격대부터 차분히 분할 매수로 수량을 늘려가기에 적합한 시기입니다.';
+    actionBadgeColor = '#0d9488';
+    actionBadgeBg = 'rgba(13, 148, 136, 0.08)';
+  } else if (curr.long >= 50 && (longTrend === 'up' || longTrend === 'flat')) {
+    title = '⚡ 상승 강세 속 에너지 응축 (고가 횡보 돌파 대기)';
+    desc = '장기 추세가 탄탄한 우상향 흐름(50 이상)을 유지하는 가운데, 단/중기 지표가 에너지를 수축하며 매물 소화를 진행하는 고가 숨고르기 국면입니다. 상승 모멘텀의 훼손이 없는 견고한 에너지 응축 단계로, 박스권 상단 돌파 시 강력한 2차 랠리가 열릴 수 있습니다.';
+    badgeColor = '#4f46e5';
+    badgeBg = 'rgba(79, 70, 229, 0.08)';
+
+    actionCode = 'HOLD';
+    actionTitle = '📈 눌림목 분할 진입 & 돌파 대기';
+    actionDesc = '상승 추세 내에서 단기 과열을 식히는 건강한 고가 횡보 상태입니다. 현재 가격은 기술적으로 안전한 눌림목 분할 매입 영역에 해당하므로 점진적 진입이 가능하며, 향후 박스권 상단 저항 돌파 시 추가 비중 확대를 기하는 전략이 대단히 유효합니다.';
+    actionBadgeColor = '#4f46e5';
+    actionBadgeBg = 'rgba(79, 70, 229, 0.08)';
+  } else {
+    // Falls under: curr.long < 50 && longTrend === 'down' or other mixed weak states
+    title = '⚠️ 역배열 수렴 및 매물대 저항 (하락 대기 국면)';
+    desc = '장기 대세 지표가 50 미만이며 지속적으로 하강하는 역배열 흐름 속에서, 단/중기 파동이 임시로 횡보하는 하락 대기 국면입니다. 이는 호재에 의한 에너지 응축이 아닌, 위쪽 두꺼운 매물벽 저항에 막혀 추가 낙폭을 준비하는 과정일 가능성이 높습니다.';
+    badgeColor = '#ea580c';
+    badgeBg = 'rgba(234, 88, 12, 0.08)';
+
+    actionCode = 'HOLD';
+    actionTitle = '🚨 매수 보류 및 리스크 관망 (Strict Hold)';
+    actionDesc = '중장기 하락 에너지가 강하게 지배하고 있어 횡보 이후 추가 하락 돌파가 일어날 위험이 큽니다. 단순 횡보에 속아 조기 진입하는 것은 매우 위험하며, 주가가 확실한 바닥을 형성하고 장기 파동이 우상향 유턴하는 것을 확인하기 전까지는 매수를 보류하고 현금을 보존하십시오.';
+    actionBadgeColor = '#ea580c';
+    actionBadgeBg = 'rgba(234, 88, 12, 0.08)';
+  }
 
   const isAllUp = shortTrend === 'up' && midTrend === 'up' && longTrend === 'up';
   const isAllDown = shortTrend === 'down' && midTrend === 'down' && longTrend === 'down';

@@ -528,10 +528,10 @@ export default function KimsRecommendation() {
             const longTrend = currLong > prevLong ? 'up' : currLong < prevLong ? 'down' : 'flat';
             
             let recommendationType: 'BUY' | 'SELL' | 'NEUTRAL' = 'NEUTRAL';
-            let recommendationReason = '단기, 중기, 장기 흐름이 엇갈리며 보합 및 관망 유지 국면입니다.';
-            let badgeColor = '#64748b';
-            let badgeBg = 'rgba(100, 116, 139, 0.08)';
-            let actionCode = 'NEUTRAL';
+            let recommendationReason = '';
+            let badgeColor = '';
+            let badgeBg = '';
+            let actionCode = '';
             
             let targetBuyRange = '';
             let targetPeriod = '';
@@ -539,6 +539,27 @@ export default function KimsRecommendation() {
             let targetSellRange = '';
             let correctionPeriod = '';
             let downsideRisk = '';
+
+            // Dynamic consolidation defaults based on Kims Investment Engine
+            if (currLong <= 35) {
+              recommendationType = 'NEUTRAL';
+              recommendationReason = '장기 대세 지표가 바닥권(35 이하)에서 에너지를 매집하는 국면입니다. 장기적 하방 지지는 단단하나 급등 시점까지 인내가 필요하여 현 가격대 박스권 하단 분할 매집(DCA)이 유리합니다.';
+              badgeColor = '#0d9488';
+              badgeBg = 'rgba(13, 148, 136, 0.08)';
+              actionCode = '바닥 에너지매집';
+            } else if (currLong >= 50 && (longTrend === 'up' || longTrend === 'flat')) {
+              recommendationType = 'NEUTRAL';
+              recommendationReason = '상승 추세(50 이상)가 탄탄히 지지되는 가운데 단/중기 지표가 고가 매물을 소화하며 에너지를 응축하는 숨고르기 국면입니다. 눌림목 스윙 분할 매입 및 박스 상단 돌파 대기 전략이 유리합니다.';
+              badgeColor = '#4f46e5';
+              badgeBg = 'rgba(79, 70, 229, 0.08)';
+              actionCode = '상승세 숨고르기';
+            } else {
+              recommendationType = 'NEUTRAL';
+              recommendationReason = '장기 대세 지표가 50 미만 역배열 하향세인 상황에서 단/중기 에너지가 보합 수렴하는 하락 대기 국면입니다. 섣부른 조기 진입을 금하며 바닥 확인 시까지 관망이 유리합니다.';
+              badgeColor = '#ea580c';
+              badgeBg = 'rgba(234, 88, 12, 0.08)';
+              actionCode = '역배열 매물저항';
+            }
             
             const isAllUp = shortTrend === 'up' && midTrend === 'up' && longTrend === 'up';
             const isAllDown = shortTrend === 'down' && midTrend === 'down' && longTrend === 'down';
