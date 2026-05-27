@@ -56,6 +56,14 @@ export default function KimsTodayRecommendation() {
         score += 15; // 장기 정배열 추세선 안착 가점
       }
 
+      // 4. 이동평균선 이격도 과열 배제 필터 (상세 분석의 SELL/대피 시그널과 정합성 유지)
+      // 50일선 대비 12% 이상 벌어지거나, 200일선 대비 20% 이상 붕 떠있는 이격 과열주는 매수 추천에서 원천 탈락 처리!
+      const ma50Divergence = s.ma50 > 0 ? s.price / s.ma50 : 1;
+      const ma200Divergence = s.ma200 > 0 ? s.price / s.ma200 : 1;
+      if (ma50Divergence > 1.12 || ma200Divergence > 1.20) {
+        score -= 200; // 초강력 감점으로 추천 랭크에서 강제 배제
+      }
+
       // ─── B. 뉴스 감성 및 수급 촉매 점수 (News & Catalyst - 25%) ───
       const stockNews = news.filter((n) => n.ticker === s.ticker);
       const positiveNews = stockNews.filter((n) => n.sentiment === 'positive');
