@@ -124,6 +124,7 @@ export interface StockQuote {
   timestamp: number;
   change1wPct?: number | null;
   price1wAgo?:  number | null;
+  news?:        any[];
 }
 
 export function useQuote(ticker: string, intervalMs = 60_000) {
