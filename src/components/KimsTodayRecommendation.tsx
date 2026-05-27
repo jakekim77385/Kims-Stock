@@ -70,8 +70,8 @@ export default function KimsTodayRecommendation() {
       if (s.price < s.ma50 || s.price < s.ma200) {
         score -= 200; // 하락세 종목 배제
       }
-      if (s.momentumScore < 65) {
-        score -= 200; // 횡보/소강 종목 배제
+      if (s.momentumScore < 68) {
+        score -= 200; // 횡보/소강 종목 배제 (SaaS 정합성 고도화: 모멘텀 68점 미만 강력 차단)
       }
 
       // ─── B. 뉴스 감성 및 수급 촉매 점수 (News & Catalyst - 25%) ───
