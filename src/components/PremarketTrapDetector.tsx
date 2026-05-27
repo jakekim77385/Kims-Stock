@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { 
   AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, 
   HelpCircle, RefreshCw, BarChart2, Zap, ArrowRight, ShieldAlert 
@@ -343,7 +343,7 @@ export default function PremarketTrapDetector() {
   }, [computedStocks, activeFilter]);
 
   // Set default selected stock
-  useMemo(() => {
+  useEffect(() => {
     if (filteredStocks.length > 0 && !selectedStock) {
       setSelectedStock(filteredStocks[0]);
     }
