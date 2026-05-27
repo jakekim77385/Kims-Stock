@@ -9,6 +9,7 @@ const MoneyFlow         = dynamic(() => import('./MoneyFlow'),         { ssr: fa
 const MacroAnalysis     = dynamic(() => import('./MacroAnalysis'),     { ssr: false });
 const SectorWeather     = dynamic(() => import('./SectorWeather'),     { ssr: false });
 const KimsRecommendation = dynamic(() => import('./KimsRecommendation'), { ssr: false });
+const KimsTodayRecommendation = dynamic(() => import('./KimsTodayRecommendation'), { ssr: false });
 
 // ─── 섹션 정의 ────────────────────────────────────────────────────────────────
 const SECTIONS = [
@@ -155,7 +156,7 @@ function EditableSection({
   );
 }
 
-type TabId = 'note' | 'macro' | 'weather' | 'valuation' | 'recovery' | 'decline' | 'moneyflow' | 'kims';
+type TabId = 'note' | 'macro' | 'weather' | 'valuation' | 'recovery' | 'decline' | 'moneyflow' | 'kims_today' | 'kims';
 
 // ─── DH 분석 패널 ────────────────────────────────────────────────────────────
 export default function DhAnalysis() {
@@ -216,7 +217,7 @@ export default function DhAnalysis() {
           </div>
           {/* 탭 */}
           <div style={{ display: 'flex', gap: 2, marginLeft: 12 }}>
-            {([['macro', '🌐 거시 판도'], ['weather', '🌤️ 섹터별 일기예보'], ['valuation', '📊 저평가'], ['recovery', '📈 반등'], ['decline', '📉 하락'], ['moneyflow', '🌊 자금흐름'], ['kims', '🔥 킴스추천'], ['note', '📝 메모']] as const).map(([id, lbl]) => (
+            {([['macro', '🌐 거시 판도'], ['weather', '🌤️ 섹터별 일기예보'], ['valuation', '📊 저평가'], ['recovery', '📈 반등'], ['decline', '📉 하락'], ['moneyflow', '🌊 자금흐름'], ['kims_today', '⚡ 킴스금일'], ['kims', '🔥 킴스추천'], ['note', '📝 메모']] as const).map(([id, lbl]) => (
               <button key={id} onClick={() => setActiveTab(id)}
                 style={{
                   fontSize: 11, fontWeight: 600, padding: '4px 12px',
@@ -297,6 +298,8 @@ export default function DhAnalysis() {
         <DeclineAnalysis />
       ) : activeTab === 'moneyflow' ? (
         <MoneyFlow />
+      ) : activeTab === 'kims_today' ? (
+        <KimsTodayRecommendation />
       ) : (
         <KimsRecommendation />
       )}
