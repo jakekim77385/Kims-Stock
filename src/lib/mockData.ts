@@ -735,12 +735,14 @@ export const defaultPortfolio: PortfolioPosition[] = [
 export interface NewsItem {
   id: number;
   headline: string;
+  translatedHeadline?: string;
   source: string;
   time: string;
   sentiment: 'positive' | 'negative' | 'neutral';
   category: string;
   ticker: string;
   impact: 'high' | 'medium' | 'low';
+  link?: string;
 }
 
 export const news: NewsItem[] = [

@@ -16,7 +16,7 @@ export async function GET(
   }
 
   try {
-    const quote = await fetchQuote(ticker.toUpperCase());
+    const quote = await fetchQuote(ticker.toUpperCase(), true);
 
     if (!quote) {
       return NextResponse.json({ error: `No data for ${ticker}` }, { status: 404 });

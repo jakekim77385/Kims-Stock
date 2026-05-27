@@ -5,7 +5,8 @@ import {
   ArrowRightLeft, Landmark, Coins, Globe, CircleDollarSign, CheckCircle2,
   AlertTriangle, ShieldCheck
 } from 'lucide-react';
-import { useComparison, type AssetRow } from '@/lib/hooks';
+import { useComparison, useMarket, type AssetRow } from '@/lib/hooks';
+import NewsDetailModal from '@/components/NewsDetailModal';
 
 interface MoneyFlowData {
   riskMode: 'risk-on' | 'neutral' | 'risk-off';
@@ -17,8 +18,11 @@ interface MoneyFlowData {
 
 export default function MacroAnalysis() {
   const { data: compData, loading: compLoading, refresh: refreshComp } = useComparison();
+  const { data: marketData, loading: marketLoading, refresh: refreshMarket } = useMarket();
   const [mfData, setMfData] = useState<MoneyFlowData | null>(null);
   const [mfLoading, setMfLoading] = useState(true);
+  const [selectedNews, setSelectedNews] = useState<any | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const loadMoneyFlow = async () => {
     setMfLoading(true);
@@ -42,9 +46,10 @@ export default function MacroAnalysis() {
   const refreshAll = () => {
     refreshComp();
     loadMoneyFlow();
+    refreshMarket();
   };
 
-  const loading = compLoading || mfLoading;
+  const loading = compLoading || mfLoading || marketLoading;
 
   if (loading && (!compData || !mfData)) {
     return (
@@ -129,6 +134,7 @@ export default function MacroAnalysis() {
 
   return (
     <div>
+      <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }`}</style>
       {/* ── 헤더 ── */}
       <div style={{ 
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
@@ -335,6 +341,269 @@ export default function MacroAnalysis() {
             </span>
           </div>
 
+        </div>
+
+        {/* ── 🗞️ 금일 장 요약 & 실시간 마켓 주요 이슈 ── */}
+        <div style={{
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 10,
+          background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.03)',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column'
+        }}>
+          {/* 패널 헤더 */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '14px 20px',
+            borderBottom: '1px solid #f1f5f9',
+            background: 'linear-gradient(90deg, #f8fafc 0%, #ffffff 100%)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 13, fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 6 }}>
+                🗞️ 금일 장 요약 & 실시간 마켓 주요 이슈
+              </span>
+              <span style={{
+                fontSize: 9.5,
+                color: '#3b82f6',
+                background: '#eff6ff',
+                padding: '2px 6px',
+                borderRadius: 4,
+                fontWeight: 700
+              }}>
+                실시간 분석
+              </span>
+            </div>
+            {marketData?.updatedAt && (
+              <span style={{ fontSize: 10, color: '#94a3b8' }}>
+                최종 분석 시각: {new Date(marketData.updatedAt).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              </span>
+            )}
+          </div>
+
+          {/* 패널 바디 */}
+          <div style={{ padding: '20px', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 24 }}>
+            {/* 왼쪽: 금일 장 요약 + 3대 이슈 */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* 요약 코멘터리 */}
+              <div style={{
+                padding: '16px',
+                borderRadius: 8,
+                background: 'rgba(255, 255, 255, 0.7)',
+                border: '1px solid #e2e8f0',
+                backdropFilter: 'blur(8px)'
+              }}>
+                <h4 style={{ fontSize: 11.5, fontWeight: 700, color: '#475569', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Info size={13} style={{ color: '#3b82f6' }} /> 금일 미 증시 종합 코멘터리
+                </h4>
+                {marketLoading && !marketData ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
+                    <div style={{ height: 14, background: '#f1f5f9', borderRadius: 4, width: '100%', animation: 'pulse 1.5s infinite' }} />
+                    <div style={{ height: 14, background: '#f1f5f9', borderRadius: 4, width: '95%', animation: 'pulse 1.5s infinite' }} />
+                    <div style={{ height: 14, background: '#f1f5f9', borderRadius: 4, width: '70%', animation: 'pulse 1.5s infinite' }} />
+                  </div>
+                ) : (
+                  <p style={{
+                    fontSize: 12,
+                    color: '#1e293b',
+                    lineHeight: 1.6,
+                    margin: 0,
+                    fontWeight: 500,
+                    wordBreak: 'keep-all'
+                  }}>
+                    {marketData?.summary || '실시간 마켓 요약 정보를 불러올 수 없습니다.'}
+                  </p>
+                )}
+              </div>
+
+              {/* 금일 핵심 3대 테마 */}
+              <div>
+                <h4 style={{ fontSize: 11.5, fontWeight: 700, color: '#475569', margin: '0 0 10px 0', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <ShieldCheck size={13} style={{ color: '#10b981' }} /> 오늘의 3대 주요 마켓 테마
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {marketLoading && !marketData ? (
+                    [1, 2, 3].map(i => (
+                      <div key={i} style={{
+                        height: 38,
+                        background: '#f8fafc',
+                        borderRadius: 6,
+                        border: '1px solid #e2e8f0',
+                        animation: 'pulse 1.5s infinite'
+                      }} />
+                    ))
+                  ) : (
+                    marketData?.keyIssues.map((issue, idx) => {
+                      let color = '#3b82f6';
+                      let bgColor = '#eff6ff';
+                      if (idx === 0) { color = '#3b82f6'; bgColor = '#eff6ff'; }
+                      else if (idx === 1) { color = '#f59e0b'; bgColor = '#fffbeb'; }
+                      else { color = '#10b981'; bgColor = '#ecfdf5'; }
+
+                      return (
+                        <div key={idx} style={{
+                          padding: '10px 12px',
+                          background: '#f8fafc',
+                          borderRadius: 6,
+                          border: '1px solid #f1f5f9',
+                          borderLeft: `4px solid ${color}`,
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: 10
+                        }}>
+                          <span style={{
+                            fontSize: 9,
+                            fontWeight: 800,
+                            color: color,
+                            background: bgColor,
+                            padding: '1px 5px',
+                            borderRadius: 3,
+                            marginTop: 1,
+                            flexShrink: 0
+                          }}>
+                            이슈 {idx + 1}
+                          </span>
+                          <span style={{ fontSize: 11, fontWeight: 600, color: '#334155', lineHeight: 1.4 }}>
+                            {issue}
+                          </span>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* 오른쪽: 실시간 주요 마켓 속보 & 감성 분석 */}
+            <div style={{ borderLeft: '1px solid #e2e8f0', paddingLeft: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <h4 style={{ fontSize: 11.5, fontWeight: 700, color: '#475569', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: 5 }}>
+                <TrendingUp size={13} style={{ color: '#8b5cf6' }} /> 실시간 마켓 뉴스 & 감성 태깅
+              </h4>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 290, overflowY: 'auto', paddingRight: 4 }}>
+                {marketLoading && !marketData ? (
+                  [1, 2, 3, 4].map(i => (
+                    <div key={i} style={{
+                      height: 52,
+                      background: '#f8fafc',
+                      borderRadius: 6,
+                      border: '1px solid #f1f5f9',
+                      animation: 'pulse 1.5s infinite'
+                    }} />
+                  ))
+                ) : !marketData?.news || marketData.news.length === 0 ? (
+                  <div style={{ padding: '24px 0', textAlign: 'center', color: '#94a3b8', fontSize: 11 }}>
+                    금일 수집된 마켓 관련 뉴스 속보가 없습니다.
+                  </div>
+                ) : (
+                  marketData.news.map((item) => {
+                    const isPositive = item.sentiment === 'positive';
+                    const isNegative = item.sentiment === 'negative';
+                    
+                    const badgeColor = isPositive 
+                      ? '#10b981' 
+                      : isNegative 
+                      ? '#ef4444' 
+                      : '#64748b';
+                    
+                    const badgeBg = isPositive 
+                      ? '#ecfdf5' 
+                      : isNegative 
+                      ? '#fef2f2' 
+                      : '#f8fafc';
+
+                    const badgeLabel = isPositive 
+                      ? '긍정 호재 🟢' 
+                      : isNegative 
+                      ? '부정 악재 🔴' 
+                      : '중립 일반 ⚪';
+
+                    return (
+                      <div key={item.id} style={{
+                        padding: '10px 12px',
+                        background: '#ffffff',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 6,
+                        transition: 'all 0.2s',
+                        cursor: 'pointer'
+                      }}
+                      onClick={() => {
+                        setSelectedNews(item);
+                        setModalOpen(true);
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.borderColor = '#cbd5e1';
+                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.02)';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.borderColor = '#e2e8f0';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10 }}>
+                          <span style={{
+                            fontSize: 11,
+                            fontWeight: 700,
+                            color: '#1e293b',
+                            lineHeight: 1.4,
+                            flex: 1,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical'
+                          }} title={item.headline}>
+                            {item.headline}
+                          </span>
+                        </div>
+                        {item.translatedHeadline && (
+                          <div style={{
+                            fontSize: 10,
+                            fontWeight: 500,
+                            color: '#475569',
+                            lineHeight: 1.35,
+                            wordBreak: 'keep-all',
+                            marginTop: -2
+                          }}>
+                            {item.translatedHeadline}
+                          </div>
+                        )}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 2 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <span style={{ fontSize: 9.5, color: '#94a3b8', fontWeight: 600 }}>
+                              {item.source}
+                            </span>
+                            <span style={{ width: 3, height: 3, borderRadius: '50%', background: '#cbd5e1' }} />
+                            <span style={{ fontSize: 9.5, color: '#94a3b8' }}>
+                              {item.time}
+                            </span>
+                          </div>
+                          <span style={{
+                            fontSize: 8.5,
+                            fontWeight: 800,
+                            color: badgeColor,
+                            background: badgeBg,
+                            padding: '2px 6px',
+                            borderRadius: 4,
+                            border: `1px solid ${isPositive ? '#a7f3d0' : isNegative ? '#fecaca' : '#cbd5e1'}`,
+                            flexShrink: 0
+                          }}>
+                            {badgeLabel}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* ── 📝 [NEW] 글로벌 & 미국 주요 마켓 이슈 분석기 ── */}
@@ -677,6 +946,13 @@ export default function MacroAnalysis() {
         </div>
 
       </div>
+
+      {/* News Detail Modal */}
+      <NewsDetailModal
+        news={selectedNews}
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
     </div>
   );
 }

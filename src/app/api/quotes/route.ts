@@ -29,7 +29,8 @@ export async function GET(req: Request) {
   }
 
   try {
-    const quotes = await fetchQuotes(tickers);
+    const includeFundamentals = searchParams.get('includeFundamentals') === 'true';
+    const quotes = await fetchQuotes(tickers, includeFundamentals);
     
     const include1w = searchParams.get('include1w') === 'true';
     let results = quotes as any[];

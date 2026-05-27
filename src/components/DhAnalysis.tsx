@@ -167,9 +167,26 @@ export default function DhAnalysis() {
   const [saved, setSaved]     = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // 클라이언트 마운트 후 localStorage 로드
+  // 탭 전환 래퍼 및 localStorage 백업 연동
+  const handleTabChange = (id: TabId) => {
+    setActiveTab(id);
+    try {
+      localStorage.setItem('dh-active-tab', id);
+    } catch { /* ignore */ }
+  };
+
+  // 클라이언트 마운트 후 localStorage 로드 및 마지막 탭 복원
   useEffect(() => {
     setNote(loadNote());
+    
+    // 이전 열람 탭 안전 복원
+    try {
+      const savedTab = localStorage.getItem('dh-active-tab') as TabId | null;
+      if (savedTab && ['note', 'macro', 'weather', 'valuation', 'recovery', 'decline', 'moneyflow', 'kims_today', 'kims', 'premarket'].includes(savedTab)) {
+        setActiveTab(savedTab);
+      }
+    } catch { /* ignore */ }
+
     setMounted(true);
   }, []);
 
@@ -220,7 +237,7 @@ export default function DhAnalysis() {
           {/* 탭 */}
           <div style={{ display: 'flex', gap: 2, marginLeft: 12 }}>
             {([['macro', '🌐 거시 판도'], ['weather', '🌤️ 섹터별 일기예보'], ['valuation', '📊 저평가'], ['recovery', '📈 반등'], ['decline', '📉 하락'], ['moneyflow', '🌊 자금흐름'], ['kims_today', '⚡ 킴스금일'], ['kims', '🔥 킴스추천'], ['premarket', '🚨 프리마켓 덫'], ['note', '📝 메모']] as const).map(([id, lbl]) => (
-              <button key={id} onClick={() => setActiveTab(id)}
+              <button key={id} onClick={() => handleTabChange(id)}
                 style={{
                   fontSize: 11, fontWeight: 600, padding: '4px 12px',
                   borderRadius: 5, cursor: 'pointer', border: '1px solid',

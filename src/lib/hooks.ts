@@ -73,8 +73,22 @@ export interface MarketIndex {
   changePct: number;
 }
 
+export interface MarketNews {
+  id: number;
+  headline: string;
+  translatedHeadline?: string;
+  source: string;
+  time: string;
+  sentiment: 'positive' | 'negative' | 'neutral';
+  impact: 'high' | 'medium';
+  link?: string;
+}
+
 export interface MarketData {
   indices:   MarketIndex[];
+  news:      MarketNews[];
+  summary:   string;
+  keyIssues: string[];
   updatedAt: string;
 }
 

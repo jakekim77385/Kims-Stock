@@ -1,6 +1,6 @@
 // GET /api/market — 실시간 시장 지수
 import { NextResponse } from 'next/server';
-import { fetchMarketIndices } from '@/lib/yahooClient';
+import { fetchMarketIndices, fetchMarketNewsAndSummary } from '@/lib/yahooClient';
 
 export const runtime = 'nodejs';
 export const revalidate = 0;
@@ -13,8 +13,22 @@ export async function GET() {
       return NextResponse.json({ error: 'No data' }, { status: 503 });
     }
 
+    // 실시간 마켓 주요 뉴스 & 국문 요약 패칭
+    let newsSummary = { news: [], summary: '', keyIssues: [] };
+    try {
+      newsSummary = await fetchMarketNewsAndSummary(indices);
+    } catch (err) {
+      console.error('[/api/market] Failed to fetch news and summary:', err);
+    }
+
     return NextResponse.json(
-      { indices, updatedAt: new Date().toISOString() },
+      { 
+        indices, 
+        news: newsSummary.news,
+        summary: newsSummary.summary,
+        keyIssues: newsSummary.keyIssues,
+        updatedAt: new Date().toISOString() 
+      },
       {
         headers: {
           'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=30',

@@ -8,6 +8,7 @@ import {
 } from 'recharts';
 import { TrendingUp, TrendingDown, RefreshCw, Newspaper, AlertTriangle, MessageSquare, Check, Sparkles, AlertCircle, HelpCircle } from 'lucide-react';
 import { stockUniverse, type Stock, news, type NewsItem } from '@/lib/mockData';
+import NewsDetailModal from '@/components/NewsDetailModal';
 import { useQuote, useHistory, type HistoryBar } from '@/lib/hooks';
 import {
   formatPercent, formatMarketCap, formatVolume,
@@ -42,25 +43,25 @@ function getFallbackStock(ticker: string, liveQuote?: any): Stock {
     avgVolume: liveQuote?.avgVolume ?? 1,
     marketCap: liveQuote?.marketCap ? liveQuote.marketCap / 1_000_000 : 0,
     pe: liveQuote?.pe ?? 0,
-    pb: 0,
-    ps: 0,
-    peg: 0,
-    evEbitda: 0,
-    roe: 0,
-    roa: 0,
-    roic: 0,
-    grossMargin: 0,
-    operatingMargin: 0,
-    netMargin: 0,
-    epsGrowthYoy: 0,
-    epsGrowth5y: 0,
-    revenueGrowthYoy: 0,
-    revenueGrowth5y: 0,
-    debtToEquity: 0,
-    currentRatio: 0,
-    quickRatio: 0,
-    interestCoverage: 0,
-    fcfYield: 0,
+    pb: liveQuote?.pb ?? 0,
+    ps: liveQuote?.ps ?? 0,
+    peg: liveQuote?.peg ?? 0,
+    evEbitda: liveQuote?.evEbitda ?? 0,
+    roe: liveQuote?.roe ?? 0,
+    roa: liveQuote?.roa ?? 0,
+    roic: liveQuote?.roic ?? 0,
+    grossMargin: liveQuote?.grossMargin ?? 0,
+    operatingMargin: liveQuote?.operatingMargin ?? 0,
+    netMargin: liveQuote?.netMargin ?? 0,
+    epsGrowthYoy: liveQuote?.epsGrowthYoy ?? 0,
+    epsGrowth5y: liveQuote?.epsGrowth5y ?? 0,
+    revenueGrowthYoy: liveQuote?.revenueGrowthYoy ?? 0,
+    revenueGrowth5y: liveQuote?.revenueGrowth5y ?? 0,
+    debtToEquity: liveQuote?.debtToEquity ?? 0,
+    currentRatio: liveQuote?.currentRatio ?? 0,
+    quickRatio: liveQuote?.quickRatio ?? 0,
+    interestCoverage: liveQuote?.interestCoverage ?? 0,
+    fcfYield: liveQuote?.fcfYield ?? 0,
     rsi14: 50,
     rs52w: 50,
     high52w: high52w,
@@ -690,6 +691,8 @@ function AnalysisContent({ tickerParam }: { tickerParam: string }) {
   const stock     = mockStock; // mock 데이터는 재무/기술분석에서 계속 활용
 
   const [activeTab, setActiveTab] = useState('overview');
+  const [selectedNews, setSelectedNews] = useState<any | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [period, setPeriod] = useState<'1mo'|'3mo'|'6mo'|'1y'>('6mo');
   const [dcfParams, setDcfParams] = useState({
     fcfPerShare: 12.0,
@@ -702,17 +705,47 @@ function AnalysisContent({ tickerParam }: { tickerParam: string }) {
   // 실시간 히스토리
   const { data: historyBars, loading: historyLoading } = useHistory(tickerParam, period);
 
+  // 당일 실시간 시세를 과거 일봉 차트의 마지막 봉으로 실시간 병합 (변동성 즉각 반영)
+  const mergedBars: HistoryBar[] = [];
+  if (historyBars && historyBars.length > 0) {
+    mergedBars.push(...historyBars);
+    if (liveQuote) {
+      const quoteDate = new Date(liveQuote.timestamp || Date.now());
+      const todayStr = quoteDate.getFullYear() + '-' + String(quoteDate.getMonth() + 1).padStart(2, '0') + '-' + String(quoteDate.getDate()).padStart(2, '0');
+      const lastBar = mergedBars[mergedBars.length - 1];
+      
+      if (lastBar.date === todayStr) {
+        mergedBars[mergedBars.length - 1] = {
+          ...lastBar,
+          close: liveQuote.price,
+          high: Math.max(lastBar.high, liveQuote.price),
+          low: Math.min(lastBar.low, liveQuote.price),
+          volume: Math.max(lastBar.volume, liveQuote.volume || 0),
+        };
+      } else {
+        mergedBars.push({
+          date: todayStr,
+          open: liveQuote.open || liveQuote.price,
+          high: Math.max(liveQuote.open || liveQuote.price, liveQuote.price),
+          low: Math.min(liveQuote.open || liveQuote.price, liveQuote.price),
+          close: liveQuote.price,
+          volume: liveQuote.volume || 0,
+        });
+      }
+    }
+  }
+
   const intrinsicValue = calcDCF(dcfParams);
   const marginOfSafety = ((intrinsicValue - price) / intrinsicValue * 100);
 
-  // RSI 라인 데이터 (mock 기반)
-  const rsiData = (historyBars ?? []).slice(-60).map((d: HistoryBar, i: number) => ({
+  // RSI 라인 데이터 (실시간 병합 기반)
+  const rsiData = mergedBars.slice(-60).map((d: HistoryBar, i: number) => ({
     date: d.date,
     rsi: 30 + Math.sin(i * 0.3) * 20 + Math.random() * 10,
   }));
 
-  // 킴스주식 3중 스토캐스틱 라인 계산 (실시간 히스토리 기반)
-  const barsForStoch = historyBars ?? [];
+  // 킴스주식 3중 스토캐스틱 라인 계산 (실시간 병합 기반)
+  const barsForStoch = mergedBars;
   const stochShort = calculateStochastic(barsForStoch, 5, 3);   // 단기 5,3,3
   const stochMid = calculateStochastic(barsForStoch, 10, 6);    // 중기 10,6,6
   const stochLong = calculateStochastic(barsForStoch, 20, 12);   // 장기 20,12,12
@@ -834,11 +867,11 @@ function AnalysisContent({ tickerParam }: { tickerParam: string }) {
                 ))}
               </div>
             </div>
-            {historyLoading && !historyBars
+            {historyLoading && mergedBars.length === 0
               ? <div style={{ height: 280, background: 'var(--bg-elevated)', borderRadius: 6, animation: 'pulse 1.5s ease-in-out infinite' }} />
               : (
               <ResponsiveContainer width="100%" height={280}>
-                <AreaChart data={historyBars ?? []} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+                <AreaChart data={mergedBars} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                   <defs>
                     <linearGradient id="priceGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor={changePct >= 0 ? '#3dbb77' : '#e05454'} stopOpacity={0.15} />
@@ -1227,7 +1260,9 @@ function AnalysisContent({ tickerParam }: { tickerParam: string }) {
             const diag = getKimsDiagnostic(lastData, prevData);
             
             const tickerUpper = tickerParam.toUpperCase();
-            const matchingNews = news.filter(n => n.ticker === tickerUpper);
+            const matchingNews = (liveQuote?.news && liveQuote.news.length > 0)
+              ? liveQuote.news
+              : news.filter(n => n.ticker === tickerUpper);
             const fallbackNews = matchingNews.length > 0 ? matchingNews : news.filter(n => n.ticker === 'SPX');
             
             const hybridStrategy = getHybridStrategy(diag.actionCode, tickerUpper, matchingNews);
@@ -1493,6 +1528,10 @@ function AnalysisContent({ tickerParam }: { tickerParam: string }) {
                           transition: 'all 0.2s ease',
                           cursor: 'pointer'
                         }}
+                        onClick={() => {
+                          setSelectedNews(n);
+                          setModalOpen(true);
+                        }}
                         onMouseEnter={e => {
                           e.currentTarget.style.transform = 'translateY(-2px)';
                           e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.04)';
@@ -1519,6 +1558,11 @@ function AnalysisContent({ tickerParam }: { tickerParam: string }) {
                           <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.4 }}>
                             {n.headline}
                           </div>
+                          {n.translatedHeadline && (
+                            <div style={{ fontSize: 10.5, fontWeight: 500, color: '#475569', lineHeight: 1.35, marginTop: -4, wordBreak: 'keep-all' }}>
+                              {n.translatedHeadline}
+                            </div>
+                          )}
 
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4, fontSize: 9.5, color: 'var(--text-muted)' }}>
                             <span>출처: {n.source}</span>
@@ -1869,6 +1913,12 @@ function AnalysisContent({ tickerParam }: { tickerParam: string }) {
           </div>
         </div>
       )}
+      {/* News Detail Modal */}
+      <NewsDetailModal
+        news={selectedNews}
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
     </div>
   );
 }

@@ -18,6 +18,7 @@ interface TrapStock {
   rsi14: number;
   sentiment: 'positive' | 'negative' | 'neutral';
   newsTitle: string;
+  category: string;
 }
 
 // ─── 3중 스토캐스틱 연산 헬퍼 ──────────────────────────────────────────────────
@@ -83,7 +84,7 @@ function calculateRSI14(bars: any[]): number {
   return 100 - (100 / (1 + rs));
 }
 
-// ─── 초기 프리마켓 빅테크 8선 시나리오 ─────────────────────────────────────────────
+// ─── 초기 프리마켓 빅테크 16선 시나리오 ────────────────────────────────────────────
 const initialPremarketStocks: TrapStock[] = [
   {
     ticker: 'TSLA',
@@ -95,7 +96,8 @@ const initialPremarketStocks: TrapStock[] = [
     stochShort: 84.5,
     rsi14: 68.2,
     sentiment: 'neutral',
-    newsTitle: 'SNS 소셜 미디어 내 자율주행(FSD) 관련 기대감 확산 (공식 악재/호재 없음)'
+    newsTitle: 'SNS 소셜 미디어 내 자율주행(FSD) 관련 기대감 확산 (공식 악재/호재 없음)',
+    category: 'bigtech'
   },
   {
     ticker: 'PLTR',
@@ -107,7 +109,8 @@ const initialPremarketStocks: TrapStock[] = [
     stochShort: 73.3,
     rsi14: 62.4,
     sentiment: 'neutral',
-    newsTitle: '장기 대세 역배열 매물대 저항선 도달 상황에서 뚜렷한 모멘텀 없음'
+    newsTitle: '장기 대세 역배열 매물대 저항선 도달 상황에서 뚜렷한 모멘텀 없음',
+    category: 'bigtech'
   },
   {
     ticker: 'NVDA',
@@ -119,7 +122,8 @@ const initialPremarketStocks: TrapStock[] = [
     stochShort: 44.8,
     rsi14: 52.4,
     sentiment: 'positive',
-    newsTitle: '차세대 Blackwell AI 가속기 메가 수주 계약 공식 체결 속보'
+    newsTitle: '차세대 Blackwell AI 가속기 메가 수주 계약 공식 체결 속보',
+    category: 'semi'
   },
   {
     ticker: 'SMCI',
@@ -131,19 +135,21 @@ const initialPremarketStocks: TrapStock[] = [
     stochShort: 78.4,
     rsi14: 71.5,
     sentiment: 'neutral',
-    newsTitle: '호재 정보 없이 단순 호가 얇은 상태에서 소액 매수 주문 펌핑'
+    newsTitle: '호재 정보 없이 단순 호가 얇은 상태에서 소액 매수 주문 펌핑',
+    category: 'semi'
   },
   {
     ticker: 'LLY',
     name: 'Eli Lilly & Co.',
     price: 882.30,
     preChangePct: 2.85,
-    preVolume: 1480000,
+    preVolume: 148000,
     avgVolume: 18000000,
     stochShort: 38.2,
     rsi14: 48.9,
     sentiment: 'positive',
-    newsTitle: '글로벌 1위 비만 치료제 젭바운드 유럽/아시아 신규 승인 메가 특허 획득'
+    newsTitle: '글로벌 1위 비만 치료제 젭바운드 유럽/아시아 신규 승인 메가 특허 획득',
+    category: 'health'
   },
   {
     ticker: 'AAPL',
@@ -155,7 +161,8 @@ const initialPremarketStocks: TrapStock[] = [
     stochShort: 52.4,
     rsi14: 51.2,
     sentiment: 'neutral',
-    newsTitle: '아이폰 신형 칩 공급업체 수급 일정 안정화 조치 브리핑'
+    newsTitle: '아이폰 신형 칩 공급업체 수급 일정 안정화 조치 브리핑',
+    category: 'bigtech'
   },
   {
     ticker: 'AMZN',
@@ -167,7 +174,8 @@ const initialPremarketStocks: TrapStock[] = [
     stochShort: 41.5,
     rsi14: 45.6,
     sentiment: 'neutral',
-    newsTitle: '글로벌 유럽 물류센터 일부 지연 노조 파업 단기 보도'
+    newsTitle: '글로벌 유럽 물류센터 일부 지연 노조 파업 단기 보도',
+    category: 'bigtech'
   },
   {
     ticker: 'MSFT',
@@ -179,12 +187,183 @@ const initialPremarketStocks: TrapStock[] = [
     stochShort: 58.2,
     rsi14: 53.8,
     sentiment: 'neutral',
-    newsTitle: '신규 오피스 코파일럿 베타 기업 대상 대규모 확장 배포 개시'
+    newsTitle: '신규 오피스 코파일럿 베타 기업 대상 대규모 확장 배포 개시',
+    category: 'bigtech'
+  },
+  {
+    ticker: 'SOXL',
+    name: 'Direxion Daily Semiconductor Bull 3X Shares',
+    price: 38.50,
+    preChangePct: 1.20,
+    preVolume: 1250000,
+    avgVolume: 45000000,
+    stochShort: 65.4,
+    rsi14: 58.2,
+    sentiment: 'neutral',
+    newsTitle: '글로벌 반도체 지수 추종 강세 3배 레버리지 유동성 랠리',
+    category: 'semi'
+  },
+  {
+    ticker: 'COIN',
+    name: 'Coinbase Global Inc.',
+    price: 224.80,
+    preChangePct: -1.45,
+    preVolume: 92000,
+    avgVolume: 8500000,
+    stochShort: 48.2,
+    rsi14: 47.9,
+    sentiment: 'neutral',
+    newsTitle: '가상자산 시장 비트코인 횡보 흐름 연동 대기 수급',
+    category: 'crypto'
+  },
+  {
+    ticker: 'MSTR',
+    name: 'MicroStrategy Inc.',
+    price: 154.20,
+    preChangePct: 4.15,
+    preVolume: 78000,
+    avgVolume: 2500000,
+    stochShort: 82.1,
+    rsi14: 73.4,
+    sentiment: 'positive',
+    newsTitle: '신규 비트코인 대규모 추가 매입 소식 보도 및 가상자산 주도주 시세 폭발',
+    category: 'crypto'
+  },
+  {
+    ticker: 'AMD',
+    name: 'Advanced Micro Devices Inc.',
+    price: 168.45,
+    preChangePct: 0.95,
+    preVolume: 142000,
+    avgVolume: 55000000,
+    stochShort: 58.6,
+    rsi14: 54.1,
+    sentiment: 'neutral',
+    newsTitle: 'AI PC 전용 차세대 라이젠 프로세서 글로벌 런칭 소식',
+    category: 'semi'
+  },
+  {
+    ticker: 'TQQQ',
+    name: 'ProShares UltraPro QQQ',
+    price: 68.90,
+    preChangePct: 0.65,
+    preVolume: 840000,
+    avgVolume: 35000000,
+    stochShort: 61.2,
+    rsi14: 56.4,
+    sentiment: 'neutral',
+    newsTitle: '나스닥100 지수 추종 3배 레버리지 ETF 기술주 동반 상승',
+    category: 'bigtech'
+  },
+  {
+    ticker: 'META',
+    name: 'Meta Platforms Inc.',
+    price: 485.60,
+    preChangePct: 1.15,
+    preVolume: 112000,
+    avgVolume: 16000000,
+    stochShort: 69.4,
+    rsi14: 61.8,
+    sentiment: 'positive',
+    newsTitle: '오픈소스 Llama 4 모델 대규모 조기 상용화 로드맵 발표',
+    category: 'bigtech'
+  },
+  {
+    ticker: 'GOOGL',
+    name: 'Alphabet Inc.',
+    price: 174.20,
+    preChangePct: -0.45,
+    preVolume: 185000,
+    avgVolume: 28000000,
+    stochShort: 46.8,
+    rsi14: 49.2,
+    sentiment: 'neutral',
+    newsTitle: '글로벌 생성형 AI 서치 광고 매출 점진적 성장 보도',
+    category: 'bigtech'
+  },
+  {
+    ticker: 'UNH',
+    name: 'UnitedHealth Group Incorporated',
+    price: 520.40,
+    preChangePct: -2.99,
+    preVolume: 6420000,
+    avgVolume: 8260000,
+    stochShort: 20.4,
+    rsi14: 31.5,
+    sentiment: 'neutral',
+    newsTitle: '돌발 실적 전망치 미세 조정 소식 보도 및 장외 거래량 집중 투매',
+    category: 'health'
+  },
+  {
+    ticker: 'IONQ',
+    name: 'IonQ Inc.',
+    price: 18.25,
+    preChangePct: 3.85,
+    preVolume: 420000,
+    avgVolume: 8500000,
+    stochShort: 74.2,
+    rsi14: 62.8,
+    sentiment: 'neutral',
+    newsTitle: '글로벌 차세대 양자컴퓨터 조기 시판 계획 소셜 미디어 포착',
+    category: 'quantum'
+  },
+  {
+    ticker: 'RGTI',
+    name: 'Rigetti Computing Inc.',
+    price: 1.85,
+    preChangePct: 5.40,
+    preVolume: 120000,
+    avgVolume: 3200000,
+    stochShort: 81.5,
+    rsi14: 68.4,
+    sentiment: 'neutral',
+    newsTitle: '양자컴퓨팅 얼라이언스 소식에 따른 중소형 테마 매수세 쏠림',
+    category: 'quantum'
+  },
+  {
+    ticker: 'BTCM',
+    name: 'BIT Mining Limited',
+    price: 3.45,
+    preChangePct: -1.25,
+    preVolume: 45000,
+    avgVolume: 850000,
+    stochShort: 42.6,
+    rsi14: 48.9,
+    sentiment: 'neutral',
+    newsTitle: '가상자산 채굴 난이도 조절 관련 일반 대기 조정 흐름',
+    category: 'crypto'
+  },
+  {
+    ticker: 'IREN',
+    name: 'Iris Energy Limited',
+    price: 12.80,
+    preChangePct: 4.65,
+    preVolume: 285000,
+    avgVolume: 6800000,
+    stochShort: 79.1,
+    rsi14: 69.2,
+    sentiment: 'positive',
+    newsTitle: 'AI HPC 데이터센터 대형 가속기 서버 전력 공급 최종 승인 공식 계약',
+    category: 'crypto'
+  },
+  {
+    ticker: 'RKLB',
+    name: 'Rocket Lab USA Inc.',
+    price: 11.45,
+    preChangePct: 2.80,
+    preVolume: 310000,
+    avgVolume: 9200000,
+    stochShort: 68.2,
+    rsi14: 61.4,
+    sentiment: 'neutral',
+    newsTitle: '미국 나사(NASA) 인공위성 보급 궤도 진입 신형 발사체 수주 계약 발표',
+    category: 'other'
   }
 ];
 
 export default function PremarketTrapDetector() {
   const [activeFilter, setActiveFilter] = useState<'all' | 'trap' | 'breakout' | 'normal'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedTicker, setSelectedTicker] = useState<string>('TSLA');
   
   // ─── 동적 종목 관리 상태 ────────────────────────────────────────────────────
@@ -192,6 +371,43 @@ export default function PremarketTrapDetector() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+
+  // ─── 마운트 시 기본 8선 빅테크 감시 종목 실시간 수급 동기화 ─────────────────────
+  useEffect(() => {
+    let active = true;
+    const syncInitialQuotes = async () => {
+      try {
+        const defaultTickers = initialPremarketStocks.map(s => s.ticker).join(',');
+        const res = await fetch(`/api/quotes?tickers=${defaultTickers}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.quotes || !active) return;
+
+        setStocks(prev => {
+          return prev.map(stock => {
+            const live = data.quotes.find((q: any) => q.ticker === stock.ticker);
+            if (live) {
+              return {
+                ...stock,
+                price: live.price,
+                preChangePct: parseFloat(live.changePct.toFixed(2)),
+                preVolume: live.volume || 12000,
+                avgVolume: live.avgVolume || 1500000,
+              };
+            }
+            return stock;
+          });
+        });
+      } catch (err) {
+        console.error('Failed to sync initial premarket quotes:', err);
+      }
+    };
+
+    syncInitialQuotes();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // ─── 가짜 상승 퀀트 스코어링 엔진 ──────────────────────────────────────────────
   const computedStocks = useMemo(() => {
@@ -317,6 +533,15 @@ export default function PremarketTrapDetector() {
 
       const isUp = q.changePct > 0.5;
 
+      // 실시간 추가 종목 카테고리 융합 추론 연산
+      let category = 'other';
+      const qUpper = q.ticker.toUpperCase();
+      if (['AAPL', 'MSFT', 'AMZN', 'META', 'GOOGL', 'TSLA', 'PLTR', 'NFLX'].includes(qUpper)) category = 'bigtech';
+      else if (['NVDA', 'AMD', 'SMCI', 'AVGO', 'SOXL', 'INTC', 'QCOM', 'ARM'].includes(qUpper)) category = 'semi';
+      else if (['IONQ', 'RGTI'].includes(qUpper)) category = 'quantum';
+      else if (['COIN', 'MSTR', 'BTCM', 'IREN', 'MARA', 'RIOT', 'CLSK'].includes(qUpper)) category = 'crypto';
+      else if (['LLY', 'UNH', 'ABBV', 'JNJ', 'MRK'].includes(qUpper)) category = 'health';
+
       const newStock: TrapStock = {
         ticker: q.ticker,
         name: q.name || q.ticker,
@@ -327,7 +552,8 @@ export default function PremarketTrapDetector() {
         stochShort: parseFloat(latestStochShort.toFixed(1)),
         rsi14: parseFloat(latestRsi.toFixed(1)),
         sentiment: isUp ? 'positive' : 'neutral',
-        newsTitle: isUp ? '실시간 프리마켓/본장 수급 및 거래 유동성 유입 랠리 포착' : '주요 보도자료 없는 일반 대기 매수세 등락'
+        newsTitle: isUp ? '실시간 프리마켓/본장 수급 및 거래 유동성 유입 랠리 포착' : '주요 보도자료 없는 일반 대기 매수세 등락',
+        category
       };
 
       setStocks(prev => [newStock, ...prev]);
@@ -340,13 +566,14 @@ export default function PremarketTrapDetector() {
     }
   };
 
-  // 3. Filtered Stocks List
+  // 3. Filtered Stocks List (상태 및 섹터 교차 AND 필터)
   const filteredStocks = useMemo(() => {
     return computedStocks.filter(s => {
-      if (activeFilter === 'all') return true;
-      return s.classification === activeFilter;
+      const matchesFilter = activeFilter === 'all' ? true : s.classification === activeFilter;
+      const matchesCategory = selectedCategory === 'all' ? true : s.category === selectedCategory;
+      return matchesFilter && matchesCategory;
     });
-  }, [computedStocks, activeFilter]);
+  }, [computedStocks, activeFilter, selectedCategory]);
 
   // Set default selected stock ticker based on filtered list
   useEffect(() => {
@@ -423,10 +650,10 @@ export default function PremarketTrapDetector() {
         )}
       </form>
 
-      {/* Filter Tabs */}
-      <div style={{ display: 'flex', gap: 8, borderBottom: '1px solid var(--border-subtle)', paddingBottom: 10 }}>
+       {/* 1단: 수급 상태 필터 */}
+      <div style={{ display: 'flex', gap: 8, borderBottom: '1px solid var(--border-subtle)', paddingBottom: 10, flexWrap: 'wrap' }}>
         {[
-          { id: 'all', label: `전체 종목 (${computedStocks.length})` },
+          { id: 'all', label: `전체 상태 (${computedStocks.length})` },
           { id: 'trap', label: `🚨 설거지 함정 (${computedStocks.filter(s => s.classification === 'trap').length})` },
           { id: 'breakout', label: `🔥 진짜 돌파 (${computedStocks.filter(s => s.classification === 'breakout').length})` },
           { id: 'normal', label: `⚖️ 일반 흐름 (${computedStocks.filter(s => s.classification === 'normal').length})` },
@@ -435,7 +662,11 @@ export default function PremarketTrapDetector() {
             key={tab.id}
             onClick={() => {
               setActiveFilter(tab.id as any);
-              const list = computedStocks.filter(s => tab.id === 'all' ? true : s.classification === tab.id);
+              const list = computedStocks.filter(s => {
+                const matchesFilter = tab.id === 'all' ? true : s.classification === tab.id;
+                const matchesCategory = selectedCategory === 'all' ? true : s.category === selectedCategory;
+                return matchesFilter && matchesCategory;
+              });
               if (list.length > 0) setSelectedTicker(list[0].ticker);
             }}
             className={`btn btn-sm ${activeFilter === tab.id ? 'btn-primary' : 'btn-ghost'}`}
@@ -444,6 +675,51 @@ export default function PremarketTrapDetector() {
             {tab.label}
           </button>
         ))}
+      </div>
+
+      {/* 2단: 섹터 카테고리 필터 (사용자 기획) */}
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', background: 'var(--bg-elevated)', padding: 8, borderRadius: 8, border: '1px solid var(--border-subtle)' }}>
+        {[
+          { id: 'all', label: `전체 섹터 (${computedStocks.length})`, bg: 'rgba(100, 116, 139, 0.05)', color: 'var(--text-muted)', activeBg: 'var(--text-muted)', activeColor: 'var(--bg-card)' },
+          { id: 'bigtech', label: `💻 빅테크 (${computedStocks.filter(s => s.category === 'bigtech').length})`, bg: 'rgba(59, 130, 246, 0.08)', color: '#3b82f6', activeBg: '#3b82f6', activeColor: '#fff' },
+          { id: 'semi', label: `📟 반도체 (${computedStocks.filter(s => s.category === 'semi').length})`, bg: 'rgba(139, 92, 246, 0.08)', color: '#8b5cf6', activeBg: '#8b5cf6', activeColor: '#fff' },
+          { id: 'quantum', label: `⚛️ 양자컴퓨터 (${computedStocks.filter(s => s.category === 'quantum').length})`, bg: 'rgba(20, 184, 166, 0.08)', color: '#14b8a6', activeBg: '#14b8a6', activeColor: '#fff' },
+          { id: 'crypto', label: `🪙 코인/채굴 (${computedStocks.filter(s => s.category === 'crypto').length})`, bg: 'rgba(245, 158, 11, 0.08)', color: '#f59e0b', activeBg: '#f59e0b', activeColor: '#fff' },
+          { id: 'health', label: `🏥 바이오/헬스 (${computedStocks.filter(s => s.category === 'health').length})`, bg: 'rgba(16, 185, 129, 0.08)', color: '#10b981', activeBg: '#10b981', activeColor: '#fff' },
+          { id: 'other', label: `🚀 기타 (${computedStocks.filter(s => s.category === 'other').length})`, bg: 'rgba(100, 116, 139, 0.08)', color: '#64748b', activeBg: '#64748b', activeColor: '#fff' },
+        ].map(tab => {
+          const isActive = selectedCategory === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => {
+                setSelectedCategory(tab.id);
+                const list = computedStocks.filter(s => {
+                  const matchesFilter = activeFilter === 'all' ? true : s.classification === activeFilter;
+                  const matchesCategory = tab.id === 'all' ? true : s.category === tab.id;
+                  return matchesFilter && matchesCategory;
+                });
+                if (list.length > 0) setSelectedTicker(list[0].ticker);
+              }}
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                padding: '5px 12px',
+                borderRadius: 20,
+                cursor: 'pointer',
+                border: 'none',
+                transition: 'all 0.2s',
+                background: isActive ? tab.activeBg : tab.bg,
+                color: isActive ? tab.activeColor : tab.color,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4
+              }}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Main Grid Split View */}
