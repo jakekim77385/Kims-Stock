@@ -1838,27 +1838,23 @@ function AnalysisContent({ tickerParam }: { tickerParam: string }) {
 
 function AnalysisContentWrapper() {
   const params = useSearchParams();
-  const [tickerParam, setTickerParam] = useState<string>('MSFT');
-
-  useEffect(() => {
-    // 1. Next.js useSearchParams lookup
-    const nextTicker = params.get('ticker');
-    if (nextTicker) {
-      setTickerParam(nextTicker.toUpperCase());
-      return;
+  
+  // 1. Next.js useSearchParams lookup
+  let ticker = params.get('ticker') || 'MSFT';
+  
+  // 2. Direct browser URL parsing to bypass Next.js client router cache freeze
+  if (typeof window !== 'undefined') {
+    const urlParams = new URLSearchParams(window.location.search);
+    const windowTicker = urlParams.get('ticker');
+    if (windowTicker) {
+      ticker = windowTicker;
     }
+  }
 
-    // 2. Direct browser URL parsing to bypass Next.js client router cache freeze
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const windowTicker = urlParams.get('ticker');
-      if (windowTicker) {
-        setTickerParam(windowTicker.toUpperCase());
-      }
-    }
-  }, [params]);
+  const upperTicker = ticker.toUpperCase();
 
-  return <AnalysisContent key={tickerParam} tickerParam={tickerParam} />;
+  // Force synchronous unmount and clean remount of AnalysisContent on key change
+  return <AnalysisContent key={upperTicker} tickerParam={upperTicker} />;
 }
 
 export default function AnalysisPage() {
