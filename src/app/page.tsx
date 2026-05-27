@@ -131,135 +131,165 @@ function MarketComparisonTable({ rows, loading }: { rows: AssetRow[] | null; loa
   }
 
   return (
-    <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+    <div className="card" style={{ padding: 0, overflow: 'hidden', background: 'transparent', border: 'none', boxShadow: 'none' }}>
       {/* 헤더 */}
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '12px 20px', borderBottom: '1px solid var(--border-subtle)',
+        background: 'white', borderRadius: 'var(--radius-md) var(--radius-md) 0 0',
+        border: '1px solid var(--border-default)',
+        flexWrap: 'wrap', gap: 10
       }}>
         <div>
-          <div className="card-title">글로벌 시장 비교표</div>
-          <div className="card-subtitle">주식 · 글로벌 · 채권/금리 · 원자재 · 달러 실시간</div>
+          <div className="card-title" style={{ fontSize: 14, fontWeight: 700 }}>글로벌 시장 실시간 동향</div>
+          <div className="card-subtitle">주식 · 글로벌 · 채권/금리 · 원자재 · 달러 주요 자산군 비교 대시보드</div>
         </div>
-        <div style={{ display: 'flex', gap: 12 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
           {CATEGORY_ORDER.map((cat) => (
             <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               <div style={{ width: 8, height: 8, borderRadius: 2, background: CATEGORY_COLOR[cat] }} />
-              <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>{cat}</span>
+              <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>{cat}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* 테이블 */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 0 }}>
+      {/* 테이블 그리드 (반응형 랩핑 적용) */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', 
+        gap: 12,
+        marginTop: 12
+      }}>
         {CATEGORY_ORDER.map((cat) => {
           const items = grouped[cat] ?? [];
           const color = CATEGORY_COLOR[cat];
           return (
-            <div key={cat} style={{ borderRight: '1px solid var(--border-subtle)' }}>
+            <div key={cat} style={{ 
+              background: 'white',
+              border: '1px solid var(--border-default)',
+              borderRadius: 'var(--radius-md)',
+              boxShadow: 'var(--shadow-sm)',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
               {/* 카테고리 헤더 */}
               <div style={{
-                padding: '8px 14px',
-                background: '#fafafa',
+                padding: '10px 14px',
+                background: 'rgba(250, 250, 250, 0.8)',
                 borderBottom: '1px solid var(--border-subtle)',
                 display: 'flex', alignItems: 'center', gap: 6,
               }}>
                 <div style={{ width: 3, height: 14, borderRadius: 2, background: color, flexShrink: 0 }} />
-                <span style={{ fontSize: 11, fontWeight: 600, color }}>{cat}</span>
+                <span style={{ fontSize: 11.5, fontWeight: 800, color }}>{cat}</span>
               </div>
 
               {/* 컬럼 헤더 */}
               <div style={{
-                display: 'grid', gridTemplateColumns: '1fr auto auto',
-                padding: '5px 14px',
+                display: 'grid', gridTemplateColumns: '1.2fr 0.8fr 1fr',
+                padding: '6px 14px',
                 background: '#fafafa',
                 borderBottom: '1px solid var(--border-subtle)',
               }}>
                 {['자산', '현재값', '등락률'].map((h) => (
                   <div key={h} style={{
-                    fontSize: 9, fontWeight: 600, textTransform: 'uppercase',
+                    fontSize: 9, fontWeight: 700, textTransform: 'uppercase',
                     letterSpacing: '0.06em', color: 'var(--text-muted)',
                     textAlign: h === '자산' ? 'left' : 'right',
                   }}>{h}</div>
                 ))}
               </div>
 
-              {/* 행 */}
-              {items.map((row) => {
-                const up = row.changePct >= 0;
-                const range = row.high52w - row.low52w;
-                const pos = range > 0 ? ((row.value - row.low52w) / range) * 100 : 50;
-                return (
-                  <div key={row.ticker} style={{
-                    display: 'grid', gridTemplateColumns: '1fr auto auto',
-                    alignItems: 'center', gap: 8,
-                    padding: '9px 14px',
-                    borderBottom: '1px solid var(--border-subtle)',
-                    transition: 'background 0.1s',
-                  }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = '#fafafa')}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                  >
-                    {/* 이름 + 52주 바 */}
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 5 }}>
-                        <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-primary)' }}>
-                          {row.name}
-                        </span>
-                        <span style={{ fontSize: 9, color: 'var(--text-muted)', fontFamily: 'JetBrains Mono' }}>
-                          {row.ticker}
-                        </span>
-                      </div>
-                      {row.high52w > 0 && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3 }}>
-                          <span style={{ fontSize: 8, color: 'var(--text-muted)', width: 14 }}>
-                            {row.low52w >= 100 ? row.low52w.toFixed(0) : row.low52w.toFixed(2)}
+              {/* 행 데이터 */}
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                {items.map((row, rIdx) => {
+                  const up = row.changePct >= 0;
+                  const range = row.high52w - row.low52w;
+                  const pos = range > 0 ? ((row.value - row.low52w) / range) * 100 : 50;
+                  return (
+                    <div key={row.ticker} style={{
+                      display: 'grid', gridTemplateColumns: '1.2fr 0.8fr 1fr',
+                      alignItems: 'center', gap: 6,
+                      padding: '10px 14px',
+                      borderBottom: rIdx < items.length - 1 ? '1px solid var(--border-subtle)' : undefined,
+                      transition: 'background 0.15s ease',
+                    }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--bg-elevated)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      {/* 이름 + 52주 영롱한 글로우 닷 게이지 */}
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, flexWrap: 'wrap' }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {row.name}
                           </span>
-                          <div style={{ flex: 1, height: 3, background: '#e8e8e8', borderRadius: 2, position: 'relative' }}>
-                            <div style={{
-                              position: 'absolute', left: 0, top: 0, height: '100%',
-                              width: `${Math.min(pos, 100)}%`,
-                              background: color, borderRadius: 2,
-                            }} />
-                          </div>
-                          <span style={{ fontSize: 8, color: 'var(--text-muted)', width: 14, textAlign: 'right' }}>
-                            {row.high52w >= 100 ? row.high52w.toFixed(0) : row.high52w.toFixed(2)}
+                          <span style={{ fontSize: 8.5, color: 'var(--text-muted)', fontFamily: 'JetBrains Mono', fontWeight: 500 }}>
+                            {row.ticker}
                           </span>
                         </div>
-                      )}
-                    </div>
-
-                    {/* 현재값 */}
-                    <div style={{
-                      fontFamily: 'JetBrains Mono', fontSize: 12, fontWeight: 600,
-                      color: 'var(--text-primary)', textAlign: 'right',
-                    }}>
-                      {fmtValue(row.value, row.unit)}
-                    </div>
-
-                    {/* 등락률 */}
-                    <div style={{
-                      display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1, minWidth: 52,
-                    }}>
-                      <div style={{
-                        fontSize: 11, fontWeight: 600, fontFamily: 'JetBrains Mono',
-                        color: up ? 'var(--positive)' : 'var(--negative)',
-                      }}>
-                        {up ? '+' : ''}{row.changePct.toFixed(2)}%
+                        {row.high52w > 0 && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                            <span style={{ fontSize: 7.5, color: 'var(--text-muted)', width: 14, fontFamily: 'JetBrains Mono' }}>
+                              {row.low52w >= 100 ? row.low52w.toFixed(0) : row.low52w.toFixed(2)}
+                            </span>
+                            <div style={{ 
+                              flex: 1, height: 4, 
+                              background: '#f3f4f6', 
+                              border: '1px solid #e5e7eb',
+                              borderRadius: 4, position: 'relative' 
+                            }}>
+                              {/* 52주 영롱한 글로우 마커 원(Glow Marker Dot) */}
+                              <div style={{
+                                position: 'absolute',
+                                left: `${Math.max(0, Math.min(pos, 100))}%`,
+                                top: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: 7, height: 7, borderRadius: '50%',
+                                background: color,
+                                boxShadow: `0 0 5px ${color}, 0 0 10px ${color}`,
+                                zIndex: 2,
+                                transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                              }} />
+                            </div>
+                            <span style={{ fontSize: 7.5, color: 'var(--text-muted)', width: 14, textAlign: 'right', fontFamily: 'JetBrains Mono' }}>
+                              {row.high52w >= 100 ? row.high52w.toFixed(0) : row.high52w.toFixed(2)}
+                            </span>
+                          </div>
+                        )}
                       </div>
+
+                      {/* 현재값 */}
                       <div style={{
-                        fontSize: 9, color: up ? 'var(--positive)' : 'var(--negative)',
-                        fontFamily: 'JetBrains Mono',
+                        fontFamily: 'JetBrains Mono', fontSize: 11.5, fontWeight: 700,
+                        color: 'var(--text-primary)', textAlign: 'right',
                       }}>
-                        {up ? '+' : ''}{row.change >= 100
-                          ? row.change.toFixed(1)
-                          : row.change.toFixed(3)}
+                        {fmtValue(row.value, row.unit)}
+                      </div>
+
+                      {/* 등락률 */}
+                      <div style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1, minWidth: 50,
+                      }}>
+                        <div style={{
+                          fontSize: 11, fontWeight: 800, fontFamily: 'JetBrains Mono',
+                          color: up ? 'var(--positive)' : 'var(--negative)',
+                        }}>
+                          {up ? '+' : ''}{row.changePct.toFixed(2)}%
+                        </div>
+                        <div style={{
+                          fontSize: 8.5, color: up ? 'var(--positive)' : 'var(--negative)',
+                          fontFamily: 'JetBrains Mono', opacity: 0.8
+                        }}>
+                          {up ? '+' : ''}{row.change >= 100
+                            ? row.change.toFixed(1)
+                            : row.change.toFixed(3)}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           );
         })}
@@ -444,7 +474,7 @@ export default function DashboardPage() {
                 <div style={{ marginTop: 8, height: 6, background: '#e8e8e8', borderRadius: 3, position: 'relative', overflow: 'hidden' }}>
                   <div style={{
                     position: 'absolute', left: 0, top: 0, height: '100%',
-                    width: `${Math.min((((spxIndex.value / 5300) * 195.2) / 220) * 100, 100)}%`,
+                    width: `${Math.min((((spxIndex.value / 5300) * 195.2) / 300) * 100, 100)}%`,
                     background: 'linear-gradient(90deg, #3dbb77 30%, #c9913a 65%, var(--negative) 100%)',
                     borderRadius: 3
                   }} />
