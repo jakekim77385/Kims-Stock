@@ -538,7 +538,7 @@ export const stockUniverse: Stock[] = [
     dividendYield: 0.64, dividendGrowth5y: 15.8, payoutRatio: 20.8,
     cEpsGrowthQtr: 12.8, aEpsGrowth3y: 13.8, nNewHigh: false, sVolumeSurge: 0.91, iInstitOwnership: 91.8,
     earningsYield: 3.8, returnOnCapital: 38.4, magicFormulaRank: 20,
-    qualityScore: 92, valueScore: 58, momentumScore: 66, growthScore: 74, overallScore: 76,
+    qualityScore: 92, valueScore: 58, momentumScore: 60, growthScore: 74, overallScore: 76,
   },
   {
     ticker: 'AMZN', name: 'Amazon.com Inc.', sector: 'Consumer Disc.', industry: 'E-Commerce',
