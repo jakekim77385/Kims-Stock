@@ -185,7 +185,7 @@ const initialPremarketStocks: TrapStock[] = [
 
 export default function PremarketTrapDetector() {
   const [activeFilter, setActiveFilter] = useState<'all' | 'trap' | 'breakout' | 'normal'>('all');
-  const [selectedStock, setSelectedStock] = useState<any | null>(null);
+  const [selectedTicker, setSelectedTicker] = useState<string>('TSLA');
   
   // ─── 동적 종목 관리 상태 ────────────────────────────────────────────────────
   const [stocks, setStocks] = useState<TrapStock[]>(initialPremarketStocks);
@@ -273,6 +273,11 @@ export default function PremarketTrapDetector() {
     });
   }, [stocks]);
 
+  // ─── selectedStock 유도 상태 ──────────────────────────────────────────────────
+  const selectedStock = useMemo(() => {
+    return computedStocks.find(s => s.ticker === selectedTicker) || computedStocks[0] || null;
+  }, [computedStocks, selectedTicker]);
+
   // ─── 관심 티커 실시간 추가 및 퀀트 융합 연산 실행 ─────────────────────────────────────
   const handleSearchAndAdd = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -326,7 +331,7 @@ export default function PremarketTrapDetector() {
       };
 
       setStocks(prev => [newStock, ...prev]);
-      setSelectedStock(newStock);
+      setSelectedTicker(newStock.ticker);
       setSearchQuery('');
     } catch (err: any) {
       setSearchError(err.message || '요청 처리 중 예기치 못한 에러가 발생했습니다.');
@@ -343,12 +348,15 @@ export default function PremarketTrapDetector() {
     });
   }, [computedStocks, activeFilter]);
 
-  // Set default selected stock
+  // Set default selected stock ticker based on filtered list
   useEffect(() => {
-    if (filteredStocks.length > 0 && !selectedStock) {
-      setSelectedStock(filteredStocks[0]);
+    if (filteredStocks.length > 0) {
+      const exists = filteredStocks.some(s => s.ticker === selectedTicker);
+      if (!exists) {
+        setSelectedTicker(filteredStocks[0].ticker);
+      }
     }
-  }, [filteredStocks, selectedStock]);
+  }, [filteredStocks, selectedTicker]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -428,7 +436,7 @@ export default function PremarketTrapDetector() {
             onClick={() => {
               setActiveFilter(tab.id as any);
               const list = computedStocks.filter(s => tab.id === 'all' ? true : s.classification === tab.id);
-              if (list.length > 0) setSelectedStock(list[0]);
+              if (list.length > 0) setSelectedTicker(list[0].ticker);
             }}
             className={`btn btn-sm ${activeFilter === tab.id ? 'btn-primary' : 'btn-ghost'}`}
             style={{ borderRadius: 20, padding: '6px 14px', fontSize: 12, fontWeight: 600 }}
@@ -456,11 +464,11 @@ export default function PremarketTrapDetector() {
               </thead>
               <tbody>
                 {filteredStocks.map((s, idx) => {
-                  const isSelected = selectedStock?.ticker === s.ticker;
+                  const isSelected = selectedTicker === s.ticker;
                   return (
                     <tr 
                       key={s.ticker}
-                      onClick={() => setSelectedStock(s)}
+                      onClick={() => setSelectedTicker(s.ticker)}
                       className="card-hover"
                       style={{ 
                         cursor: 'pointer',
