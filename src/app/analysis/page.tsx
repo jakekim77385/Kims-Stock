@@ -632,9 +632,7 @@ function getAvoidToBuyBlueprint(
   };
 }
 
-function AnalysisContent() {
-  const params = useSearchParams();
-  const tickerParam = params.get('ticker') || 'MSFT';
+function AnalysisContent({ tickerParam }: { tickerParam: string }) {
 
   // 실시간 API
   const { data: liveQuote, loading: quoteLoading, refresh } = useQuote(tickerParam, 60_000);
@@ -1838,10 +1836,16 @@ function AnalysisContent() {
   );
 }
 
+function AnalysisContentWrapper() {
+  const params = useSearchParams();
+  const tickerParam = params.get('ticker') || 'MSFT';
+  return <AnalysisContent key={tickerParam} tickerParam={tickerParam} />;
+}
+
 export default function AnalysisPage() {
   return (
     <Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>로딩 중...</div>}>
-      <AnalysisContent />
+      <AnalysisContentWrapper />
     </Suspense>
   );
 }

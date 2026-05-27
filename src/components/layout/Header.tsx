@@ -75,7 +75,8 @@ export default function Header() {
                   padding: '8px 12px', cursor: 'pointer',
                   borderBottom: '1px solid var(--border-subtle)',
                 }}
-                onMouseDown={() => {
+                onMouseDown={(e) => {
+                  e.preventDefault();
                   router.push(`/analysis?ticker=${r.ticker}`);
                   setQuery(''); setShowSearch(false);
                 }}
