@@ -340,7 +340,7 @@ export async function searchTickers(query: string): Promise<SearchResult[]> {
   try {
     const res = await yahooFinance.search(resolvedQuery, { newsCount: 0, quotesCount: 10 });
     const results: SearchResult[] = (res.quotes ?? [])
-      .filter((q: any) => q.isYahooFinance && q.quoteType === 'EQUITY')
+      .filter((q: any) => q.isYahooFinance && (q.quoteType === 'EQUITY' || q.quoteType === 'ETF'))
       .slice(0, 8)
       .map((q: any) => ({
         ticker:   q.symbol,
