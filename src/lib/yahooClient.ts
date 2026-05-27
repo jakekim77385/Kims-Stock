@@ -103,7 +103,13 @@ export const KOREAN_STOCK_MAP: Record<string, string> = {
 // ─── 한국어 종목명을 영어 티커로 변환하는 헬퍼 ─────────────────────────────────────
 export function resolveTicker(ticker: string): string {
   if (!ticker) return ticker;
-  const clean = ticker.trim().toUpperCase();
+  let clean = ticker.trim().toUpperCase();
+  
+  // Convert dot symbols to dash symbols for Yahoo Finance compatibility (e.g., BRK.B -> BRK-B, BF.B -> BF-B)
+  if (clean.includes('.')) {
+    clean = clean.replace(/\./g, '-');
+  }
+
   const lower = clean.toLowerCase();
 
   // 한국어 매핑 탐색 (완전 일치 또는 포함 관계)
