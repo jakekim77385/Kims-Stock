@@ -5,7 +5,6 @@ import {
   AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, 
   HelpCircle, RefreshCw, BarChart2, Zap, ArrowRight, ShieldAlert 
 } from 'lucide-react';
-import { stockUniverse } from '@/lib/mockData';
 
 interface TrapStock {
   ticker: string;
@@ -20,115 +19,182 @@ interface TrapStock {
   newsTitle: string;
 }
 
+// ─── 3중 스토캐스틱 연산 헬퍼 ──────────────────────────────────────────────────
+function calculateStochastic(bars: any[], period: number, smoothK: number): number[] {
+  if (!bars || bars.length === 0) return [];
+  const rawK: number[] = [];
+  for (let i = 0; i < bars.length; i++) {
+    if (i < period - 1) {
+      rawK.push(50);
+      continue;
+    }
+    let lowestLow = bars[i].low;
+    let highestHigh = bars[i].high;
+    for (let j = i - period + 1; j <= i; j++) {
+      if (bars[j].low < lowestLow) lowestLow = bars[j].low;
+      if (bars[j].high > highestHigh) highestHigh = bars[j].high;
+    }
+    const range = highestHigh - lowestLow;
+    const currentClose = bars[i].close;
+    const k = range > 0 ? ((currentClose - lowestLow) / range) * 100 : 50;
+    rawK.push(k);
+  }
+  const stochLines: number[] = [];
+  for (let i = 0; i < rawK.length; i++) {
+    if (i < smoothK - 1) {
+      stochLines.push(rawK[i]);
+      continue;
+    }
+    let sum = 0;
+    for (let j = i - smoothK + 1; j <= i; j++) {
+      sum += rawK[j];
+    }
+    stochLines.push(sum / smoothK);
+  }
+  return stochLines;
+}
+
+// ─── RSI-14 연산 헬퍼 ──────────────────────────────────────────────────────────
+function calculateRSI14(bars: any[]): number {
+  if (!bars || bars.length < 15) return 50;
+  let gains = 0;
+  let losses = 0;
+  
+  for (let i = 1; i <= 14; i++) {
+    const diff = bars[i].close - bars[i - 1].close;
+    if (diff > 0) gains += diff;
+    else losses -= diff;
+  }
+  
+  let avgGain = gains / 14;
+  let avgLoss = losses / 14;
+  
+  for (let i = 15; i < bars.length; i++) {
+    const diff = bars[i].close - bars[i - 1].close;
+    const gain = diff > 0 ? diff : 0;
+    const loss = diff < 0 ? -diff : 0;
+    avgGain = (avgGain * 13 + gain) / 14;
+    avgLoss = (avgLoss * 13 + loss) / 14;
+  }
+  
+  if (avgLoss === 0) return 100;
+  const rs = avgGain / avgLoss;
+  return 100 - (100 / (1 + rs));
+}
+
+// ─── 초기 프리마켓 빅테크 8선 시나리오 ─────────────────────────────────────────────
+const initialPremarketStocks: TrapStock[] = [
+  {
+    ticker: 'TSLA',
+    name: 'Tesla Inc.',
+    price: 248.50,
+    preChangePct: 3.42,
+    preVolume: 168000,
+    avgVolume: 82000000,
+    stochShort: 84.5,
+    rsi14: 68.2,
+    sentiment: 'neutral',
+    newsTitle: 'SNS 소셜 미디어 내 자율주행(FSD) 관련 기대감 확산 (공식 악재/호재 없음)'
+  },
+  {
+    ticker: 'PLTR',
+    name: 'Palantir Technologies Inc.',
+    price: 139.47,
+    preChangePct: 2.10,
+    preVolume: 42000,
+    avgVolume: 35000000,
+    stochShort: 73.3,
+    rsi14: 62.4,
+    sentiment: 'neutral',
+    newsTitle: '장기 대세 역배열 매물대 저항선 도달 상황에서 뚜렷한 모멘텀 없음'
+  },
+  {
+    ticker: 'NVDA',
+    name: 'NVIDIA Corp.',
+    price: 231.50,
+    preChangePct: 4.80,
+    preVolume: 29500000,
+    avgVolume: 310000000,
+    stochShort: 44.8,
+    rsi14: 52.4,
+    sentiment: 'positive',
+    newsTitle: '차세대 Blackwell AI 가속기 메가 수주 계약 공식 체결 속보'
+  },
+  {
+    ticker: 'SMCI',
+    name: 'Super Micro Computer Inc.',
+    price: 45.20,
+    preChangePct: 5.25,
+    preVolume: 12000,
+    avgVolume: 18000000,
+    stochShort: 78.4,
+    rsi14: 71.5,
+    sentiment: 'neutral',
+    newsTitle: '호재 정보 없이 단순 호가 얇은 상태에서 소액 매수 주문 펌핑'
+  },
+  {
+    ticker: 'LLY',
+    name: 'Eli Lilly & Co.',
+    price: 882.30,
+    preChangePct: 2.85,
+    preVolume: 1480000,
+    avgVolume: 18000000,
+    stochShort: 38.2,
+    rsi14: 48.9,
+    sentiment: 'positive',
+    newsTitle: '글로벌 1위 비만 치료제 젭바운드 유럽/아시아 신규 승인 메가 특허 획득'
+  },
+  {
+    ticker: 'AAPL',
+    name: 'Apple Inc.',
+    price: 311.29,
+    preChangePct: 0.80,
+    preVolume: 78000,
+    avgVolume: 52000000,
+    stochShort: 52.4,
+    rsi14: 51.2,
+    sentiment: 'neutral',
+    newsTitle: '아이폰 신형 칩 공급업체 수급 일정 안정화 조치 브리핑'
+  },
+  {
+    ticker: 'AMZN',
+    name: 'Amazon.com Inc.',
+    price: 185.12,
+    preChangePct: -1.85,
+    preVolume: 420000,
+    avgVolume: 28000000,
+    stochShort: 41.5,
+    rsi14: 45.6,
+    sentiment: 'neutral',
+    newsTitle: '글로벌 유럽 물류센터 일부 지연 노조 파업 단기 보도'
+  },
+  {
+    ticker: 'MSFT',
+    name: 'Microsoft Corp.',
+    price: 420.25,
+    preChangePct: 0.40,
+    preVolume: 110000,
+    avgVolume: 22000000,
+    stochShort: 58.2,
+    rsi14: 53.8,
+    sentiment: 'neutral',
+    newsTitle: '신규 오피스 코파일럿 베타 기업 대상 대규모 확장 배포 개시'
+  }
+];
+
 export default function PremarketTrapDetector() {
   const [activeFilter, setActiveFilter] = useState<'all' | 'trap' | 'breakout' | 'normal'>('all');
   const [selectedStock, setSelectedStock] = useState<any | null>(null);
+  
+  // ─── 동적 종목 관리 상태 ────────────────────────────────────────────────────
+  const [stocks, setStocks] = useState<TrapStock[]>(initialPremarketStocks);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
-  // 1. 프리마켓 가상 데이터셋 형성 (2026-05-27 현지 실시간 프리마켓 모사)
-  const premarketStocks: TrapStock[] = useMemo(() => {
-    return [
-      {
-        ticker: 'TSLA',
-        name: 'Tesla Inc.',
-        price: 248.50,
-        preChangePct: 3.42,
-        preVolume: 168000,
-        avgVolume: 82000000, // 0.20% of avg volume
-        stochShort: 84.5,
-        rsi14: 68.2,
-        sentiment: 'neutral',
-        newsTitle: 'SNS 소셜 미디어 내 자율주행(FSD) 관련 기대감 확산 (공식 악재/호재 없음)'
-      },
-      {
-        ticker: 'PLTR',
-        name: 'Palantir Technologies Inc.',
-        price: 139.47,
-        preChangePct: 2.10,
-        preVolume: 42000,
-        avgVolume: 35000000, // 0.12% of avg volume
-        stochShort: 73.3,
-        rsi14: 62.4,
-        sentiment: 'neutral',
-        newsTitle: '장기 대세 역배열 매물대 저항선 도달 상황에서 뚜렷한 모멘텀 없음'
-      },
-      {
-        ticker: 'NVDA',
-        name: 'NVIDIA Corp.',
-        price: 231.50,
-        preChangePct: 4.80,
-        preVolume: 29500000,
-        avgVolume: 310000000, // 9.5% of avg volume (Super High!)
-        stochShort: 44.8,
-        rsi14: 52.4,
-        sentiment: 'positive',
-        newsTitle: '차세대 Blackwell AI 가속기 메가 수주 계약 공식 체결 속보'
-      },
-      {
-        ticker: 'SMCI',
-        name: 'Super Micro Computer Inc.',
-        price: 45.20,
-        preChangePct: 5.25,
-        preVolume: 12000,
-        avgVolume: 18000000, // 0.06% of avg volume (Super Thin!)
-        stochShort: 78.4,
-        rsi14: 71.5,
-        sentiment: 'neutral',
-        newsTitle: '호재 정보 없이 단순 호가 얇은 상태에서 소액 매수 주문 펌핑'
-      },
-      {
-        ticker: 'LLY',
-        name: 'Eli Lilly & Co.',
-        price: 882.30,
-        preChangePct: 2.85,
-        preVolume: 1480000,
-        avgVolume: 18000000, // 8.22% of avg volume (High!)
-        stochShort: 38.2,
-        rsi14: 48.9,
-        sentiment: 'positive',
-        newsTitle: '글로벌 1위 비만 치료제 젭바운드 유럽/아시아 신규 승인 메가 특허 획득'
-      },
-      {
-        ticker: 'AAPL',
-        name: 'Apple Inc.',
-        price: 311.29,
-        preChangePct: 0.80,
-        preVolume: 78000,
-        avgVolume: 52000000, // 1.50% of avg volume
-        stochShort: 52.4,
-        rsi14: 51.2,
-        sentiment: 'neutral',
-        newsTitle: '아이폰 신형 칩 공급업체 수급 일정 안정화 조치 브리핑'
-      },
-      {
-        ticker: 'AMZN',
-        name: 'Amazon.com Inc.',
-        price: 185.12,
-        preChangePct: -1.85,
-        preVolume: 420000,
-        avgVolume: 28000000, // 1.50% of avg volume
-        stochShort: 41.5,
-        rsi14: 45.6,
-        sentiment: 'neutral',
-        newsTitle: '글로벌 유럽 물류센터 일부 지연 노조 파업 단기 보도'
-      },
-      {
-        ticker: 'MSFT',
-        name: 'Microsoft Corp.',
-        price: 420.25,
-        preChangePct: 0.40,
-        preVolume: 110000,
-        avgVolume: 22000000, // 0.50% of avg volume
-        stochShort: 58.2,
-        rsi14: 53.8,
-        sentiment: 'neutral',
-        newsTitle: '신규 오피스 코파일럿 베타 기업 대상 대규모 확장 배포 개시'
-      }
-    ];
-  }, []);
-
-  // 2. 가짜 상승 탐지 알고리즘 (Quantitative Trap Scorer Engine)
+  // ─── 가짜 상승 퀀트 스코어링 엔진 ──────────────────────────────────────────────
   const computedStocks = useMemo(() => {
-    return premarketStocks.map(s => {
+    return stocks.map(s => {
       let trapScore = 0;
       
       // A. 프리마켓 상승 대비 거래량 비율 점수 (유동성 부족에 비례)
@@ -204,7 +270,69 @@ export default function PremarketTrapDetector() {
         volumePct
       };
     });
-  }, [premarketStocks]);
+  }, [stocks]);
+
+  // ─── 관심 티커 실시간 추가 및 퀀트 융합 연산 실행 ─────────────────────────────────────
+  const handleSearchAndAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const query = searchQuery.trim().toUpperCase();
+    if (!query) return;
+
+    if (stocks.some(s => s.ticker === query)) {
+      setSearchError('이미 감지 목록에 존재하는 티커입니다.');
+      return;
+    }
+
+    setSearchLoading(true);
+    setSearchError(null);
+
+    try {
+      // 1. 실시간 Quote API 조회 (프리마켓 시세 및 누적 거래량 획득)
+      const qRes = await fetch(`/api/quote/${query}`);
+      if (!qRes.ok) throw new Error('존재하지 않는 미국 주식 티커이거나 정보 취득에 실패했습니다.');
+      const qData = await qRes.json();
+      if (!qData.quote) throw new Error('종목 데이터를 제공할 수 없습니다.');
+      const q = qData.quote;
+
+      // 2. 기술적 파동 계산용 3개월 히스토리 조회
+      const hRes = await fetch(`/api/history/${query}?period=3mo`);
+      if (!hRes.ok) throw new Error('히스토리 지표 연산 중 오류가 발생했습니다.');
+      const hData = await hRes.json();
+      const bars = hData.bars || [];
+
+      if (bars.length < 20) {
+        throw new Error('기술 분석에 필요한 일일 거래 내역이 부족합니다.');
+      }
+
+      // 3. 3중 스토캐스틱 (단기 5,3,3) 및 RSI-14 실시간 추출
+      const stochShortArray = calculateStochastic(bars, 5, 3);
+      const latestStochShort = stochShortArray[stochShortArray.length - 1] ?? 50;
+      const latestRsi = calculateRSI14(bars);
+
+      const isUp = q.changePct > 0.5;
+
+      const newStock: TrapStock = {
+        ticker: q.ticker,
+        name: q.name || q.ticker,
+        price: q.price,
+        preChangePct: parseFloat(q.changePct.toFixed(2)),
+        preVolume: q.volume || 12000,
+        avgVolume: q.avgVolume || 1500000,
+        stochShort: parseFloat(latestStochShort.toFixed(1)),
+        rsi14: parseFloat(latestRsi.toFixed(1)),
+        sentiment: isUp ? 'positive' : 'neutral',
+        newsTitle: isUp ? '실시간 프리마켓/본장 수급 및 거래 유동성 유입 랠리 포착' : '주요 보도자료 없는 일반 대기 매수세 등락'
+      };
+
+      setStocks(prev => [newStock, ...prev]);
+      setSelectedStock(newStock);
+      setSearchQuery('');
+    } catch (err: any) {
+      setSearchError(err.message || '요청 처리 중 예기치 못한 에러가 발생했습니다.');
+    } finally {
+      setSearchLoading(false);
+    }
+  };
 
   // 3. Filtered Stocks List
   const filteredStocks = useMemo(() => {
@@ -214,7 +342,7 @@ export default function PremarketTrapDetector() {
     });
   }, [computedStocks, activeFilter]);
 
-  // Automatically select first stock on load
+  // Set default selected stock
   useMemo(() => {
     if (filteredStocks.length > 0 && !selectedStock) {
       setSelectedStock(filteredStocks[0]);
@@ -233,10 +361,58 @@ export default function PremarketTrapDetector() {
           </h2>
         </div>
         <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-          본장이 시작되기 전 얇은 호가창을 노리고 거래량 없이 띄워진 **\'가짜 펌핑(설거지 함정)\'** 종목과, 거대 거래량이 동반되어 개장 후 급등 가능성이 큰 **\'진짜 돌파\'** 종목을 입체 연산합니다. 
+          본장이 시작되기 전 얇은 호가창을 노리고 거래량 없이 띄워진 **'가짜 펌핑(설거지 함정)'** 종목과, 거대 거래량이 동반되어 개장 후 급등 가능성이 큰 **'진짜 돌파'** 종목을 입체 연산합니다. 
           개장 직후 개미들을 사냥하는 덫을 사전에 간파하여 **개장 전 분할 선제 익절 전략**을 가능케 만듭니다.
         </p>
       </div>
+
+      {/* DYNAMIC SEARCH BAR (업그레이드: 미국 전체 티커 실시간 스캔 기능 탑재) */}
+      <form onSubmit={handleSearchAndAdd} style={{ 
+        display: 'flex', 
+        gap: 10, 
+        background: 'var(--bg-card)', 
+        padding: 12, 
+        borderRadius: 8, 
+        border: '1px solid var(--border-default)', 
+        alignItems: 'center',
+        flexWrap: 'wrap'
+      }}>
+        <Zap size={16} color="var(--accent-gold)" />
+        <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginRight: 6 }}>실시간 티커 추가 분석:</span>
+        <input 
+          type="text" 
+          placeholder="미국 주식 티커 입력 (예: AMD, COIN, MSTR, SOXL...)" 
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          disabled={searchLoading}
+          style={{
+            flex: 1,
+            minWidth: 200,
+            padding: '6px 12px',
+            fontSize: 12,
+            background: 'var(--bg-elevated)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: 6,
+            color: 'var(--text-primary)',
+            outline: 'none',
+            textTransform: 'uppercase'
+          }}
+        />
+        <button 
+          type="submit" 
+          disabled={searchLoading}
+          className="btn btn-sm btn-primary"
+          style={{ padding: '6px 16px', fontSize: 12, height: 'auto', minHeight: 0, display: 'flex', alignItems: 'center', gap: 6 }}
+        >
+          {searchLoading ? <RefreshCw size={12} className="animate-spin" /> : <TrendingUp size={12} />}
+          <span>{searchLoading ? '분석 중...' : '실시간 퀀트 스캔'}</span>
+        </button>
+        {searchError && (
+          <span style={{ fontSize: 11, color: 'var(--negative)', fontWeight: 600, marginLeft: 10 }}>
+            ⚠️ {searchError}
+          </span>
+        )}
+      </form>
 
       {/* Filter Tabs */}
       <div style={{ display: 'flex', gap: 8, borderBottom: '1px solid var(--border-subtle)', paddingBottom: 10 }}>
